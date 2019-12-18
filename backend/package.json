@@ -1,0 +1,20 @@
+{
+  "name": "easyoffice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js",
+	"start" "node main.js"
+  },
+  "keywords": [
+    "easyoffice",
+    "backend",
+    "api"
+  ],
+  "author": "A225",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
