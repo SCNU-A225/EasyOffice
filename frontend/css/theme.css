@@ -687,8 +687,8 @@ Copyright (c) 2014 Daniel Eden
 /* Load font library */
 @font-face {
   font-family: "AdminDesigns";
-  src: url("../../../fonts/admindesigns/admindesigns.eot");
-  src: url("../../../fonts/admindesigns/admindesignsd41d.eot?#iefix") format("embedded-opentype"), url("../../../fonts/admindesigns/admindesigns.woff") format("woff"), url("../../../fonts/admindesigns/admindesigns.ttf") format("truetype"), url("../../../fonts/admindesigns/admindesigns.svg#admindesigns") format("svg");
+  src: url("../fonts/admindesigns/admindesigns.eot");
+  src: url("../fonts/admindesigns/admindesignsd41d.eot?#iefix") format("embedded-opentype"), url("../fonts/admindesigns/admindesigns.woff") format("woff"), url("../fonts/admindesigns/admindesigns.ttf") format("truetype"), url("../fonts/admindesigns/admindesigns.svg#admindesigns") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -734,8 +734,8 @@ Copyright (c) 2014 Daniel Eden
 /* Load font library */
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('../../../fonts/glyphicons/glyphicons-halflings-regular.eot');
-  src: url('../../../fonts/glyphicons/glyphicons-halflings-regulard41d.eot?#iefix') format('embedded-opentype'), url('../../../fonts/glyphicons/glyphicons-halflings-regular.html') format('woff2'), url('../../../fonts/glyphicons/glyphicons-halflings-regular.woff') format('woff'), url('../../../fonts/glyphicons/glyphicons-halflings-regular.ttf') format('truetype'), url('../../../fonts/glyphicons/glyphicons-halflings-regular.svg#@glyphicons_halflingsregular') format('svg');
+  src: url('../fonts/glyphicons/glyphicons-halflings-regular.eot');
+  src: url('../fonts/glyphicons/glyphicons-halflings-regulard41d.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons/glyphicons-halflings-regular.html') format('woff2'), url('../fonts/glyphicons/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons/glyphicons-halflings-regular.svg#@glyphicons_halflingsregular') format('svg');
 }
 /*Catchall baseclass*/
 .glyphicon {
@@ -1535,8 +1535,8 @@ Copyright (c) 2014 Daniel Eden
 /* Load font library */
 @font-face {
   font-family: 'FontAwesome';
-  src: url('../../../fonts/font-awesome/fontawesome-webfonte0a5.eot?v=4.3.0');
-  src: url('../../../fonts/font-awesome/fontawesome-webfontd41d.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('../../../fonts/font-awesome/fontawesome-webfonte0a5.html?v=4.3.0') format('woff2'), url('../../../fonts/font-awesome/fontawesome-webfonte0a5.woff?v=4.3.0') format('woff'), url('../../../fonts/font-awesome/fontawesome-webfonte0a5.ttf?v=4.3.0') format('truetype'), url('../../../fonts/font-awesome/fontawesome-webfonte0a5.svg?v=4.3.0#fontawesomeregular') format('svg');
+  src: url('../fonts/font-awesome/fontawesome-webfonte0a5.eot?v=4.3.0');
+  src: url('../fonts/font-awesome/fontawesome-webfontd41d.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('../fonts/font-awesome/fontawesome-webfonte0a5.html?v=4.3.0') format('woff2'), url('../fonts/font-awesome/fontawesome-webfonte0a5.woff?v=4.3.0') format('woff'), url('../fonts/font-awesome/fontawesome-webfonte0a5.ttf?v=4.3.0') format('truetype'), url('../fonts/font-awesome/fontawesome-webfonte0a5.svg?v=4.3.0#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -3331,8 +3331,8 @@ Copyright (c) 2014 Daniel Eden
 }
 @font-face {
   font-family: 'StateFaceRegular';
-  src: url('../../../fonts/stateface/stateface-regular-webfont.eot');
-  src: url('../../../fonts/stateface/stateface-regular-webfontd41d.eot?#iefix') format('embedded-opentype'), url('../../../fonts/stateface/stateface-regular-webfont.woff') format('woff'), url('../../../fonts/stateface/stateface-regular-webfont.ttf') format('truetype'), url('../../../fonts/stateface/stateface-regular-webfont.svg#StateFaceRegular') format('svg');
+  src: url('../fonts/stateface/stateface-regular-webfont.eot');
+  src: url('../fonts/stateface/stateface-regular-webfontd41d.eot?#iefix') format('embedded-opentype'), url('../fonts/stateface/stateface-regular-webfont.woff') format('woff'), url('../fonts/stateface/stateface-regular-webfont.ttf') format('truetype'), url('../fonts/stateface/stateface-regular-webfont.svg#StateFaceRegular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -3899,11 +3899,11 @@ tr.shown + tr {
   background-color: #f7f7f7;
 }
 td.details-control {
-  background: url('../../../img/plugins/details_open.png') no-repeat center center;
+  background: url('../img/plugins/details_open.png') no-repeat center center;
   cursor: pointer;
 }
 tr.shown td.details-control {
-  background: url('../../../img/plugins/details_close.png') no-repeat center center;
+  background: url('../img/plugins/details_close.png') no-repeat center center;
 }
 /*===============================================
   Dropzone
@@ -4504,12 +4504,12 @@ previous button's border...
 .map .pagination .back-btn {
   float: left;
   border-right: 1px solid #ddd;
-  background: url("../../../img/plugins/arrow_left_12x12.png") no-repeat 50% 50%;
+  background: url("../img/plugins/arrow_left_12x12.png") no-repeat 50% 50%;
 }
 .map .pagination .fwd-btn {
   float: right;
   border-left: 1px solid #ddd;
-  background: url("../../../img/plugins/arrow_right_12x12.png") no-repeat 50% 50%;
+  background: url("../img/plugins/arrow_right_12x12.png") no-repeat 50% 50%;
 }
 .map .checker {
   margin-right: 8px;
@@ -6757,7 +6757,7 @@ form.hide-list-label .bootstrap-duallistbox-container label {
   background: #555;
 }
 .dockmodal-header .header-action i {
-  background: url("../../../img/plugins/admindock-sprite.png") no-repeat top left;
+  background: url("../img/plugins/admindock-sprite.png") no-repeat top left;
   vertical-align: top;
   display: inline-block;
   *display: inline;
@@ -13154,13 +13154,13 @@ button.close {
   position: relative;
 }
 .bg-background.bg-topbar {
-  background: url("../../../img/patterns/topbar-bg.jpg") no-repeat center left;
+  background: url("../img/patterns/topbar-bg.jpg") no-repeat center left;
 }
 .bg-background.bg-topbar2 {
-  background: url("../../../img/patterns/topbar-bg2.jpg") no-repeat center left;
+  background: url("../img/patterns/topbar-bg2.jpg") no-repeat center left;
 }
 .bg-background.bg-topbar3 {
-  background: url("../../../img/patterns/topbar-bg3.html") no-repeat center left;
+  background: url("../img/patterns/topbar-bg3.html") no-repeat center left;
 }
 .bg-background.bg-psuedo-tp:before,
 .bg-background.bg-psuedo-tp-dark:before,
@@ -14151,7 +14151,7 @@ i.field-icon-right {
 }
 /* Favicon sprite */
 .favicons {
-  background: url('../../../img/sprites/favicons.png') no-repeat;
+  background: url('../img/sprites/favicons.png') no-repeat;
   width: 16px;
   height: 16px;
   vertical-align: middle;
@@ -14184,7 +14184,7 @@ i.field-icon-right {
   height: 26px;
   vertical-align: middle;
   display: inline-block;
-  background: url("../../../img/sprites/news-logo_sprite.png") no-repeat;
+  background: url("../img/sprites/news-logo_sprite.png") no-repeat;
   background-position: 0 0;
 }
 .news-sprite.cnn {
@@ -14210,12 +14210,12 @@ i.field-icon-right {
 .flag-xs {
   width: 16px;
   height: 16px;
-  background: url('../../../img/sprites/flag-xs.png') no-repeat top left;
+  background: url('../img/sprites/flag-xs.png') no-repeat top left;
 }
 .flag-sm {
   width: 32px;
   height: 32px;
-  background: url('../../../img/sprites/flag-sm.png') no-repeat top left;
+  background: url('../img/sprites/flag-sm.png') no-repeat top left;
 }
 .flag-sm.flag-fr {
   background-position: 0 0;
@@ -14489,7 +14489,7 @@ ol.timeline-list li.timeline-item .timeline-date {
 .task-widget ul.task-current .task-item .task-menu:before {
   content: "";
   position: absolute;
-  background: url("../../../img/plugins/grippy_large.png") no-repeat top left;
+  background: url("../img/plugins/grippy_large.png") no-repeat top left;
   width: 6px;
   height: 20px;
   top: 10px;
@@ -20436,7 +20436,7 @@ body.sb-r-o #toggle_sidemenu_r .ad {
   padding: 17px 20px 10px;
   height: auto;
   width: 100%;
-  background: url("../../../img/patterns/topbar-bg.jpg") repeat -60px top;
+  background: url("../img/patterns/topbar-bg.jpg") repeat -60px top;
   -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.4) inset;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.4) inset;
 }
@@ -20974,7 +20974,7 @@ body.external-page {
 }
 body.external-page #main {
   overflow: hidden;
-  background: url("../../../img/patterns/backgrounds/1.jpg") no-repeat top center #2d494d;
+  background: url("../img/patterns/backgrounds/1.jpg") no-repeat top center #2d494d;
 }
 body.external-page #main:before {
   display: none;
@@ -24475,7 +24475,7 @@ blockquote.blockquote-dark {
 @media (min-width: 1140px) {
   body.boxed-layout {
     background-color: transparent !important;
-    background-image: url("../../../img/patterns/noise.html");
+    background-image: url("../img/patterns/noise.html");
     background-repeat: repeat;
   }
   body.boxed-layout .navbar {
