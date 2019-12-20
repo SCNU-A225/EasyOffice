@@ -99,11 +99,11 @@ server.post('/login',function(request,response){
     let sn = request.body.sn
     let password = request.body.password
     if(sn == ''){
-        response.json({msg:'请输入员工编号'})
+        response.json({code:401, msg:'请输入员工编号'})
         return
     }
     if(password == ''){
-        response.json({msg:'请输入密码'})
+        response.json({code:402, msg:'请输入密码'})
         return
     }
     let sql = 'select * from employee where sn=? and password=?'
@@ -125,11 +125,11 @@ server.post('/login',function(request,response){
                 if(result.length > 0){
                     //员工部门
                     let department = result[0].name
-                    response.json({sn:sn, name:name, post:post, department:department})
+                    response.json({code:200, sn:sn, name:name, post:post, department:department})
                 }
             })
         }else{
-            response.json({msg:'员工编号或密码错误'})
+            response.json({code:403, msg:'员工编号或密码错误'})
         }
     })
 })
@@ -141,6 +141,7 @@ server.post('/login',function(request,response){
 server.get('/logout',function(request, response){
     delete request.session.sn
     delete request.session.department_sn
+    response.json({code:200, msg:'注销成功'})
     //TODO
     //response.redirect(301,'login') 第一个参数为http状态码，第二个参数为跳转到html的url
     // 301 redirect: 301 代表永久性转移(Permanently Moved)，清除就地址的资源，不可返回
@@ -161,29 +162,36 @@ server.get('/logout',function(request, response){
      let name = request.body.name
      let address = request.body.address
      if(sn == ''){
-         response.json({msg:'请输入部门编号'})
+         response.json({code:401, msg:'请输入部门编号'})
          return
      }
      if(name == ''){
-        response.json({msg:'请输入部门名称'})
+        response.json({code:402, msg:'请输入部门名称'})
         return
      }
      if(address == ''){
-        response.json({msg:'请输入部门地址'})
+        response.json({code:403, msg:'请输入部门地址'})
         return
      }
      let sql1 = 'select * from department where sn=? or name=?'
      pool.query(sql1, [sn, name], function(err, result){
          if(err) throw err
          if(result.length > 0){
-             response.json({msg:'部门编号或部门名称已存在'})
+             response.json({code:501, msg:'部门编号或部门名称已存在'})
              return
          }else{
              let sql2 = 'insert into department values(?,?,?)'
              pool.query(sql2, [sn, name, address], function(err, result){
                  if(err) throw err
-                 response.json({msg:'添加成功'})
+                 response.json({code:200, msg:'添加成功'})
              })
          }
      })
+ })
+
+ /**
+  * 1.2删除部门
+  */
+ server.get('/department/delete',function(request,response){
+     
  })
