@@ -99,11 +99,11 @@ server.post('/login',function(request,response){
     let sn = request.body.sn
     let password = request.body.password
     if(sn == ''){
-        response.json({msg:'employee number required'})
+        response.json({msg:'请输入员工编号'})
         return
     }
     if(password == ''){
-        response.json({msg:'password required'})
+        response.json({msg:'请输入密码'})
         return
     }
     let sql = 'select * from employee where sn=? and password=?'
@@ -129,7 +129,7 @@ server.post('/login',function(request,response){
                 }
             })
         }else{
-            response.json({msg:'sn or password error'})
+            response.json({msg:'员工编号或密码错误'})
         }
     })
 })
@@ -141,7 +141,49 @@ server.post('/login',function(request,response){
 server.get('/logout',function(request, response){
     delete request.session.sn
     delete request.session.department_sn
+    //TODO
     //response.redirect(301,'login') 第一个参数为http状态码，第二个参数为跳转到html的url
     // 301 redirect: 301 代表永久性转移(Permanently Moved)，清除就地址的资源，不可返回
     // 302 redirect: 302 代表暂时性转移(Temporarily Moved )，保留就地址内容，可以返回到跳转前的页面及状态
 })
+
+/*
+ ******************************
+ *部门管理
+ ****************************** 
+ */
+
+ /**
+  * 1.1添加部门
+  */
+ server.post('/department/add',function(request, response){
+     let sn = request.body.sn
+     let name = request.body.name
+     let address = request.body.address
+     if(sn == ''){
+         response.json({msg:'请输入部门编号'})
+         return
+     }
+     if(name == ''){
+        response.json({msg:'请输入部门名称'})
+        return
+     }
+     if(address == ''){
+        response.json({msg:'请输入部门地址'})
+        return
+     }
+     let sql1 = 'select * from department where sn=? or name=?'
+     pool.query(sql1, [sn, name], function(err, result){
+         if(err) throw err
+         if(result.length > 0){
+             response.json({msg:'部门编号或部门名称已存在'})
+             return
+         }else{
+             let sql2 = 'insert into department values(?,?,?)'
+             pool.query(sql2, [sn, name, address], function(err, result){
+                 if(err) throw err
+                 response.json({msg:'添加成功'})
+             })
+         }
+     })
+ })
