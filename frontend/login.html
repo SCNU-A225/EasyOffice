@@ -47,7 +47,9 @@
                             <label class="switch ib switch-primary mt10">
                                 <input type="checkbox" name="remember" id="remember" checked="true">
                                 <label for="remember" data-on="是" data-off="否"></label>
-                                <span>记住我</span>
+                                <span>记住我&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span id="loginMsg" style="color: red;"></span>
+                                </span>
                             </label>
                         </div>
                     </form>
@@ -64,8 +66,67 @@
 <script>
     //登录按钮事件监听
     $('#loginBtn').click(function(){
-        
+        let userId = $('#sn').val();
+        let paswd = $('#password').val();
+
+        $.ajax({
+        method:'POST',
+        url:'http://127.0.0.1:5050/user/login',
+        data:`sn=${userId}&password=${paswd}`,
+        success:function(data,msg,xhr){
+          if(data.code==200){
+                //$('#modelRegisterSucc').modal()
+              
+          }else{
+
+          }
+        },
+        error:function(xhr,err){
+          console.log('异步请求失败'),
+          console.log(xhr)
+          console.log(err)
+        }
+      })
     })
 </script>
+<!--弹出式对话框表示注册成功-->
+<div id="modelRegisterSucc" class="modal fade"><!--半透明遮罩-->
+    <div class="modal-dialog modal-sm"><!--对话框的尺寸，位置-->
+        <div class="modal-content"><!--边框，倒角，背景色-->
+            <!--头部-->
+            <div class="modal-header">
+                <h4 class="modal-title">注册成功</h4>
+            </div>
+            <!--主体-->
+            <div class="modal-body">
+                <p>新用户注册成功</p>
+            </div>
+            <!--尾部-->
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-info">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modelRegisterError" class="modal fade"><!--半透明遮罩-->
+    <div class="modal-dialog modal-sm"><!--对话框的尺寸，位置-->
+        <div class="modal-content"><!--边框，倒角，背景色-->
+            <!--头部-->
+            <div class="modal-header">
+                <h4 class="modal-title">注册失败</h4>
+            </div>
+            <!--主体-->
+            <div class="modal-body">
+                <p>新用户注册成功</p>
+                <p>服务器返回的错误消息
+                    <span id="serverError"></span>
+                </p>
+            </div>
+            <!--尾部-->
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-info">确定</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

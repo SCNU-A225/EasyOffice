@@ -1,4 +1,4 @@
-﻿drop database if exists easyoffice;
+drop database if exists easyoffice;
 
 create database easyoffice;
 use easyoffice;
