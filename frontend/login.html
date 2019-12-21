@@ -21,7 +21,7 @@
                     <p class="lead">欢迎使用EasyOffice管理系统</p>
                 </div>
                 <div class="panel mt30 mb25">
-                    <form method="post" action="#" id="contact">
+                    <form action="#" id="contact">
                         <div class="panel-body bg-light p25 pb15">
                             <div class="section">
                                 <label for="sn" class="field-label text-muted fs18 mb10">工号</label>
@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="panel-footer clearfix">
-                            <button id="loginBtn" type="submit" class="button btn-primary mr10 pull-right">登陆</button>
+                            <button id="loginBtn" type="button" class="button btn-primary mr10 pull-right">登陆</button>
                             <label class="switch ib switch-primary mt10">
                                 <input type="checkbox" name="remember" id="remember" checked="true">
                                 <label for="remember" data-on="是" data-off="否"></label>
@@ -59,10 +59,12 @@
     </section>
 </div>
 <script src="js/jquery-1.11.1.min.js"></script>
-<script src="js/jquery_ui/jquery-ui.min.js"></script>
-<script src="js/utility/utility.js"></script>
-<script src="js/demo/demo.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/utility.js"></script>
+<script src="js/demo.js"></script>
 <script src="js/main.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <script>
     //登录按钮事件监听
     $('#loginBtn').click(function(){
@@ -75,10 +77,11 @@
         data:`sn=${userId}&password=${paswd}`,
         success:function(data,msg,xhr){
           if(data.code==200){
-                //$('#modelRegisterSucc').modal()
-              
+                $('#modelRegisterSucc').modal()
+                window.location.href = "../"
           }else{
-
+                $('#serverError').html(data.msg)
+                $('#modelRegisterError').modal()
           }
         },
         error:function(xhr,err){
@@ -95,11 +98,11 @@
         <div class="modal-content"><!--边框，倒角，背景色-->
             <!--头部-->
             <div class="modal-header">
-                <h4 class="modal-title">注册成功</h4>
+                <h4 class="modal-title">登录成功</h4>
             </div>
             <!--主体-->
             <div class="modal-body">
-                <p>新用户注册成功</p>
+                <p>用户登录成功</p>
             </div>
             <!--尾部-->
             <div class="modal-footer">
@@ -113,12 +116,11 @@
         <div class="modal-content"><!--边框，倒角，背景色-->
             <!--头部-->
             <div class="modal-header">
-                <h4 class="modal-title">注册失败</h4>
+                <h4 class="modal-title">登录失败</h4>
             </div>
             <!--主体-->
             <div class="modal-body">
-                <p>新用户注册成功</p>
-                <p>服务器返回的错误消息
+                <p>
                     <span id="serverError"></span>
                 </p>
             </div>

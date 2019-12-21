@@ -95,7 +95,7 @@ server.use(function(request,response,next){
 /**
  * 用户登录
  */
-server.post('/login',function(request,response){
+server.post('/user/login',function(request,response){
     let sn = request.body.sn
     let password = request.body.password
     if(sn == ''){
