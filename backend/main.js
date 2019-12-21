@@ -10,7 +10,7 @@ let pool = mysql.createPool({
     host : '127.0.0.1',
     port : '3306',
     user : 'root',
-    password : '123456',
+    password : '',
     database : 'easyoffice',
     connectionLimit : '10'    //连接池大小限制
 })
@@ -135,7 +135,6 @@ server.post('/user/login',function(request,response){
                     let department = result[0].name
                     request.session.department = department
                     response.json({code:200, sn:sn, name:name, post:post, department:department})
-                    //response.redirect(302,'http://127.0.0.1/self.html')
                 }
             })
         }else{
@@ -162,7 +161,7 @@ server.get('/logout',function(request, response){
  * 查看个人信息
  */
 server.get('/info',function(request, response){
-    console.log(request.session)
+    // console.log(request.session)
     response.json({
         sn: request.session.sn,
         name: request.session.name,
@@ -183,6 +182,43 @@ server.post('/password', function(request, response){
         response.json({code:200, msg:'修改成功'})
     })
 })
+
+/**
+ * 登录成功后跳转首页通过sn获取用户信息
+ */
+server.post('/user/info',function(request,response){
+    let sn = request.body.sn
+    let sql = 'select * from employee where sn=?'
+    pool.query(sql,[sn],function(err,result){
+        if(err) throw err
+        if(result.length > 0){
+            //session记录用户信息
+            //员工编号
+            request.session.sn = sn
+            //员工姓名
+            let name = result[0].name
+            request.session.name = name
+            //员工职务
+            let post = result[0].post
+            request.session.post = post
+            //员工部门编号
+            request.session.department_sn = result[0].department_sn
+            let sql = 'select * from department where sn=?'
+            pool.query(sql,[result[0].department_sn],function(err,result){
+                if(err) throw err
+                if(result.length > 0){
+                    //员工部门
+                    let department = result[0].name
+                    request.session.department = department
+                    response.json({code:200, sn:sn, name:name, post:post, department:department})
+                }
+            })
+        }else{
+            response.json({code:403, msg:'没有员工'})
+        }
+    })
+})
+
 /*
  ******************************
  *部门管理

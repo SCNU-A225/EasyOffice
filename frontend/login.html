@@ -78,7 +78,7 @@
         success:function(data,msg,xhr){
           if(data.code==200){
                 $('#modelRegisterSucc').modal()
-                window.location.href = "self.html"
+                window.location.href = "self.html?sn="+$('#sn').val()
           }else{
                 $('#serverError').html(data.msg)
                 $('#modelRegisterError').modal()
