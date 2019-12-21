@@ -30,7 +30,7 @@ server.use(session({
     resave: true, //每次请求都重新设置session cookie，假设你的cookie是10分钟过期，每次请求都会再设置10分钟
     saveUninitialized: true, //无论有没有session cookie，每次请求都设置个session cookie 默认给个标示(name)为 connect.sid
     cookie: {
-    //    maxAge: 1000 * 60 //过期时间 毫秒ms,如果maxAge不设置，默认为null，这样的expire的时间就是浏览器的关闭时间，即每次关闭浏览器的时候，session都会失效。
+    //    maxAge: 1000 * 60 * 60 //过期时间 毫秒ms,如果maxAge不设置，默认为null，这样的expire的时间就是浏览器的关闭时间，即每次关闭浏览器的时候，session都会失效。
     } 
 }))
 /*
