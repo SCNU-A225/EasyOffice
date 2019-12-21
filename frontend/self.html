@@ -16,7 +16,7 @@
             <header class="navbar navbar-fixed-top navbar-shadow">
                 <div class="navbar-branding">
                     <a class="navbar-brand" href="dashboard.html">
-                        <b>爱慕课</b>OA
+                        <b>EasyOffice</b>OA
                     </a>
                     <span id="toggle_sidemenu_l" class="ad ad-lines"></span>
                 </div>
@@ -24,7 +24,7 @@
                     <li class="dropdown menu-merge">
                         <a href="#" class="dropdown-toggle fw600 p15" data-toggle="dropdown">
                             <img src="/assets/img/avatars/5.jpg" alt="avatar" class="mw30 br64">
-                            <span class="hidden-xs pl15"> 刘备 </span>
+                            <span id="rname" class="hidden-xs pl15">  </span>
                             <span class="caret caret-tp hidden-xs"></span>
                         </a>
                         <ul class="dropdown-menu list-group dropdown-persist w250" role="menu">
@@ -55,7 +55,11 @@
                                     <img src="assets/img/avatars/3.jpg" class="img-responsive">
                                 </a>
                                 <div class="media-body">
-                                    <div class="media-author">刘备--总经理</div>
+                                    <div class="media-author">
+                                        <span id="lname"></span>
+                                        --
+                                        <span is="post"></span>
+                                    </div>
                                     <div class="media-links">
                                         <a href="/quit">退出</a>
                                     </div>
@@ -152,15 +156,15 @@
                                     </div>
                                     <div class="section row">
                                         <div class="col-md-2">工号</div>
-                                        <div class="col-md-4">${sessionScope.employee.sn}</div>
+                                        <div class="col-md-4" id="sn"></div>
                                         <div class="col-md-2">姓名</div>
-                                        <div class="col-md-4">${sessionScope.employee.name}</div>
+                                        <div class="col-md-4" id="name"></div>
                                     </div>
                                     <div class="section row">
                                         <div class="col-md-2">所属部门</div>
-                                        <div class="col-md-4">${sessionScope.employee.department.name}</div>
+                                        <div class="col-md-4" id="department"></div>
                                         <div class="col-md-2">职务</div>
-                                        <div class="col-md-4">${sessionScope.employee.post}</div>
+                                        <div class="col-md-4" id="post"></div>
                                     </div>
                                     <div class="panel-footer text-right">
                                         <button type="button" class="button" onclick="javascript:window.history.go(-1);"> 返回 </button>
@@ -215,7 +219,29 @@
         <script src="js/main.js"></script>
         <script type="text/javascript" src="js/pages.js"></script>
         <script type="text/javascript" src="js/items.js"></script>
-
+        <script>
+            $(document).ready(function(){
+                $.ajax({
+                    method:'GET',
+                    url:'http://127.0.0.1:5050/info',
+                    data:``,
+                    success:function(data,msg,xhr){
+                        alert(data.name)
+                        $('#rname').html(data.name)
+                        $('#lname').html(data.name)
+                        $('#sn').html(data.sn)
+                        $('#name').html(data.name)
+                        $('#department').html(data.department)
+                        $('#post').html(data.post)
+                    },
+                    error:function(xhr,err){
+                        console.log('异步请求失败'),
+                        console.log(xhr)
+                        console.log(err)
+                    }
+                })
+            })
+        </script>
     </body>
 
 

@@ -135,6 +135,7 @@ server.post('/user/login',function(request,response){
                     let department = result[0].name
                     request.session.department = department
                     response.json({code:200, sn:sn, name:name, post:post, department:department})
+                    //response.redirect(302,'http://127.0.0.1/self.html')
                 }
             })
         }else{
@@ -161,6 +162,7 @@ server.get('/logout',function(request, response){
  * 查看个人信息
  */
 server.get('/info',function(request, response){
+    console.log(request.session)
     response.json({
         sn: request.session.sn,
         name: request.session.name,
