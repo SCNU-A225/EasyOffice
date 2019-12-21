@@ -10,7 +10,7 @@ let pool = mysql.createPool({
     host : '127.0.0.1',
     port : '3306',
     user : 'root',
-    password : '',
+    password : '123456',
     database : 'easyoffice',
     connectionLimit : '10'    //连接池大小限制
 })
@@ -101,7 +101,7 @@ server.use(function(request,response,next){
 /**
  * 用户登录
  */
-server.post('/login',function(request,response){
+server.post('/user/login',function(request,response){
     let sn = request.body.sn
     let password = request.body.password
     if(sn == ''){
@@ -135,6 +135,7 @@ server.post('/login',function(request,response){
                     let department = result[0].name
                     request.session.department = department
                     response.json({code:200, sn:sn, name:name, post:post, department:department})
+                    //response.redirect(302,'http://127.0.0.1/self.html')
                 }
             })
         }else{
@@ -161,6 +162,7 @@ server.get('/logout',function(request, response){
  * 查看个人信息
  */
 server.get('/info',function(request, response){
+    console.log(request.session)
     response.json({
         sn: request.session.sn,
         name: request.session.name,
