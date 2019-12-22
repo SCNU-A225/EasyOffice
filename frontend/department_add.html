@@ -159,7 +159,7 @@
                                         <div class="section row">
                                             <div class="col-md-6">
                                                 <label for="sn" class="field prepend-icon">
-                                                    <form:input path="sn" cssClass="gui-input" placeholder="编号..."/>
+                                                    <input type="text" class="gui-input" placeholder="工号..." id="formSn">
                                                     <label for="sn" class="field-icon">
                                                         <i class="fa fa-user"></i>
                                                     </label>
@@ -167,7 +167,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="name" class="field prepend-icon">
-                                                    <form:input path="name" cssClass="gui-input" placeholder="名称..." />
+                                                    <input type="text" class="gui-input" placeholder="名称..." id="formName">
                                                     <label for="name" class="field-icon">
                                                         <i class="fa fa-user"></i>
                                                     </label>
@@ -176,14 +176,14 @@
                                         </div>
                                         <div class="section">
                                             <label for="address" class="field prepend-icon">
-                                                <form:input path="address" cssClass="gui-input" placeholder="地址..." />
+                                                <input type="text" class="gui-input" placeholder="地址..." id="formAddress">
                                                 <label for="address" class="field-icon">
                                                     <i class="fa fa-lock"></i>
                                                 </label>
                                             </label>
                                         </div>
                                         <div class="panel-footer text-right">
-                                            <button type="submit" class="button"> 保存 </button>
+                                            <button type="button" class="button" id="addDepartmentForm"> 保存 </button>
                                             <button type="button" class="button" onclick="javascript:window.history.go(-1);"> 返回 </button>
                                         </div>
                                     </div>
@@ -340,6 +340,41 @@
             }
         })
 
+        $('#addDepartmentForm').click(function() {
+            let sn = $('#formSn').val()
+            let name = $('#formName').val()
+            let address = $('#formAddress').val()
+            if(sn==''||name==''||address==''){
+                $('#modelMsgTitle').html("添加失败")
+                $('#modelMsgBody').html("输入框不能为空")
+                $('#modelMsg').modal()
+            }
+            else{
+                $.ajax({
+                    method:'POST',
+                    url:'http://127.0.0.1:5050/department/add',
+                    xhrFields:{withCredentials:true},
+                    data:`sn=${sn}&name=${name}&address=${address}`,
+                    success:function(data,msg,xhr){
+                        if(data.code==200){
+                            $('#modelMsgTitle').html("添加成功")
+                            $('#modelMsgBody').html("已成功添加")
+                            $('#modelMsg').modal()
+                        }
+                        else{
+                            $('#modelMsgTitle').html("添加失败")
+                            $('#modelMsgBody').html(data.msg)
+                            $('#modelMsg').modal()
+                        }
+                    },
+                    error:function(xhr,err){
+                        console.log('异步请求失败'),
+                        console.log(xhr)
+                        console.log(err)
+                    }
+                })
+            }
+        })
     </script>
     <!--弹框表示修改结果-->
     <div id="modelMsg" class="modal fade"><!--半透明遮罩-->
