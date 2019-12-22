@@ -333,42 +333,6 @@
             }
         })
 
-        $('#changePaswd').click(function (){
-
-            let old = $('#old').val()
-            let new1 = $('#new1').val()
-            let new2 = $('#new2').val()
-
-            if(old == '' || new1 == '' || new2 == ''){
-                $('#modelMsgTitle').html("修改失败")
-                $('#modelMsgBody').html("密码框不能为空")
-                $('#modelMsg').modal()
-            }
-            else{
-                $.ajax({
-                    method:'POST',
-                    url:'http://127.0.0.1:5050/logout',
-                    data:`password=${new1}`,
-                    success:function(data,msg,xhr){
-                        if(data.code == 200){
-                            $('#modelMsgTitle').html("修改成功")
-                            $('#modelMsgBody').html("新密码已设置")
-                            $('#modelMsg').modal()
-                        }
-                        else{
-                            $('#modelMsgTitle').html("修改失败")
-                            $('#modelMsgBody').html("原密码错误")
-                            $('#modelMsg').modal()
-                        }
-                    },
-                    error:function(xhr,err){
-                        console.log('异步请求失败'),
-                        console.log(xhr)
-                        console.log(err)
-                    }
-                })
-            }
-        })
     </script>
     <!--弹框表示修改结果-->
     <div id="modelMsg" class="modal fade"><!--半透明遮罩-->

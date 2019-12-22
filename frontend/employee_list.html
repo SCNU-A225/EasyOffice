@@ -162,7 +162,7 @@
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-default light">
-                                                    <i class="fa fa-plus" onclick="javascript:window.location.href='/employee/to_add';"></i>
+                                                    <i class="fa fa-plus" onclick="javascript:window.location.href='./employee_add.html'"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -190,28 +190,6 @@
                                             <th>操作</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <c:forEach items="${list}" var="emp">
-                                        <tr class="message-unread">
-                                            <td class="hidden-xs">
-                                                <label class="option block mn">
-                                                    <input type="checkbox" name="mobileos" value="FR">
-                                                    <span class="checkbox mn"></span>
-                                                </label>
-                                            </td>
-                                            <td>${emp.sn}</td>
-                                            <td>${emp.name}</td>
-                                            <td class="text-center fw600">${emp.department.name}</td>
-                                            <td class="hidden-xs">
-                                                <span class="badge badge-warning mr10 fs11">${emp.post}</span>
-                                            </td>
-                                            <td>
-                                                <a href="/employee/to_update?sn=${emp.sn}">编辑</a>
-                                                <a href="/employee/remove?sn=${emp.sn}">删除</a>
-                                            </td>
-                                        </tr>
-                                        </c:forEach>
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -263,17 +241,57 @@
     <script type="text/javascript" src="js/pages.js"></script>
     <script type="text/javascript" src="js/items.js"></script>
     <script>
-        //页面加载时获取个人信息
+        //页面加载时获取数据
         $(document).ready(function(){
-            var sn = getQueryVariable("sn")
+            //个人信息
+            //var sn = getQueryVariable("sn")
+            // $.ajax({
+            //     method:'POST',
+            //     url:'http://127.0.0.1:5050/user/info',
+            //     data:`sn=${sn}`,
+            //     success:function(data,msg,xhr){
+            //         $('#rname').html(data.name)
+            //         $('#lname').html(data.name)
+            //         $('#post1').html(data.post)
+            //     },
+            //     error:function(xhr,err){
+            //         console.log('异步请求失败'),
+            //         console.log(xhr)
+            //         console.log(err)
+            //     }
+            // })
+            //加载员工列表
+            getEmployeeList()
+
+        })
+
+        function getEmployeeList(){
             $.ajax({
-                method:'POST',
-                url:'http://127.0.0.1:5050/user/info',
-                data:`sn=${sn}`,
+                method:'GET',
+                url:'http://127.0.0.1:5050/employee/all',
+                data:``,
                 success:function(data,msg,xhr){
-                    $('#rname').html(data.name)
-                    $('#lname').html(data.name)
-                    $('#post1').html(data.post)
+                    for(i in data.employees){
+                        let row = '<tr class="message-unread">\
+                                    <td class="hidden-xs">\
+                                        <label class="option block mn">\
+                                            <input type="checkbox" name="mobileos" value="FR">\
+                                                <span class="checkbox mn"></span>\
+                                        </label>\
+                                    </td>\
+                                    <td>'+data.employees[i].sn+'</td>\
+                                    <td>'+data.employees[i].name+'</td>\
+                                    <td class="fw600">'+data.employees[i].departmentName+'</td>\
+                                    <td class="hidden-xs">\
+                                        <span class="badge badge-warning mr10 fs11">'+data.employees[i].post+'</span>\
+                                    </td>\
+                                    <td>\
+                                        <a href="./employee_update.html?sn='+data.employees[i].sn+'">编辑</a>\
+                                        <a href="#" onclick="delEmployee(this)" name="'+data.employees[i].sn+'">删除</a>\
+                                    </td>\
+                                </tr>'
+                        $('#message-table').append(row)
+                    }
                 },
                 error:function(xhr,err){
                     console.log('异步请求失败'),
@@ -281,7 +299,7 @@
                     console.log(err)
                 }
             })
-        })
+        }
 
         function getQueryVariable(variable)
         {
@@ -359,63 +377,25 @@
             }
         })
 
-        $('#changePaswd').click(function (){
-
-            let old = $('#old').val()
-            let new1 = $('#new1').val()
-            let new2 = $('#new2').val()
-
-            if(old == '' || new1 == '' || new2 == ''){
-                $('#modelMsgTitle').html("修改失败")
-                $('#modelMsgBody').html("密码框不能为空")
-                $('#modelMsg').modal()
-            }
-            else{
-                $.ajax({
-                    method:'POST',
-                    url:'http://127.0.0.1:5050/logout',
-                    data:`password=${new1}`,
-                    success:function(data,msg,xhr){
-                        if(data.code == 200){
-                            $('#modelMsgTitle').html("修改成功")
-                            $('#modelMsgBody').html("新密码已设置")
-                            $('#modelMsg').modal()
-                        }
-                        else{
-                            $('#modelMsgTitle').html("修改失败")
-                            $('#modelMsgBody').html("原密码错误")
-                            $('#modelMsg').modal()
-                        }
-                    },
-                    error:function(xhr,err){
-                        console.log('异步请求失败'),
-                        console.log(xhr)
-                        console.log(err)
-                    }
-                })
-            }
-        })
+        //根据name属性删除员工
+        function delEmployee(e){
+            let name = $(e).attr("name")
+            $.ajax({
+                method:'POST',
+                url:'http://127.0.0.1:5050/employee/delete',
+                data:`sn=${name}`,
+                success:function(data,msg,xhr){
+                    alert("删除成功")
+                    window.location.reload()
+                },
+                error:function(xhr,err){
+                    console.log('异步请求失败'),
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
+        }
     </script>
-    <!--弹框表示修改结果-->
-    <div id="modelMsg" class="modal fade"><!--半透明遮罩-->
-        <div class="modal-dialog modal-sm"><!--对话框的尺寸，位置-->
-            <div class="modal-content"><!--边框，倒角，背景色-->
-                <!--头部-->
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modelMsgTitle"></h4>
-                </div>
-                <!--主体-->
-                <div class="modal-body">
-                    <p>
-                        <span id="modelMsgBody"></span>
-                    </p>
-                </div>
-                <!--尾部-->
-                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-info">确定</button>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>
