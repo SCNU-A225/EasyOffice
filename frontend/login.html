@@ -78,8 +78,6 @@
         data:`sn=${userId}&password=${paswd}`,
         success:function(data,msg,xhr){
           if(data.code==200){
-                // $('#modelRegisterSucc').modal()
-                // window.location.href = "self.html?sn="+$('#sn').val()
                 location.href="self.html"
           }else{
                 $('#serverError').html(data.msg)

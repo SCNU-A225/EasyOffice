@@ -158,7 +158,7 @@
                                         <div class="section row">
                                             <div class="col-md-6">
                                                 <label for="sn" class="field prepend-icon">
-                                                    <input type="text" class="gui-input" placeholder="工号..." readonly="true">
+                                                    <input type="text" class="gui-input" placeholder="工号..." readonly="true" id="formSn">
                                                     <label for="sn" class="field-icon">
                                                         <i class="fa fa-user"></i>
                                                     </label>
@@ -166,7 +166,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="name" class="field prepend-icon">
-                                                    <input type="text" class="gui-input" placeholder="姓名...">
+                                                    <input type="text" class="gui-input" placeholder="姓名..." id="formName">
                                                     <label for="name" class="field-icon">
                                                         <i class="fa fa-user"></i>
                                                     </label>
@@ -178,6 +178,9 @@
                                                 <label for="sn" class="field select">
                                                     <select name="setDe" id="setDepartment" class="gui-input">
                                                         <option value="1" selected disabled style="display: none;">--所属部门--</option>
+                                                        <option value="财务部">财务部</option>
+                                                        <option value="事业部">事业部</option>
+                                                        <option value="总经理办公室">总经理办公室</option>
                                                     </select>
                                                     <i class="arrow double"></i>
                                                 </label>
@@ -186,6 +189,10 @@
                                                 <label for="post" class="field select">
                                                     <select name="setPo" id="setPost" class="gui-input">
                                                         <option value="1" selected disabled style="display: none;">--职务--</option>
+                                                        <option value="总经理">总经理</option>
+                                                        <option value="部门经理">部门经理</option>
+                                                        <option value="财务">财务</option>
+                                                        <option value="员工">员工</option>
                                                     </select>
                                                     <i class="arrow double"></i>
                                                 </label>
@@ -250,13 +257,30 @@
         $(document).ready(function(){
             var sn = getQueryVariable("sn")
             $.ajax({
-                method:'POST',
-                url:'http://127.0.0.1:5050/user/info',
-                data:`sn=${sn}`,
+                method:'GET',
+                url:'http://127.0.0.1:5050/info',
+                xhrFields:{withCredentials:true},
+                data:``,
                 success:function(data,msg,xhr){
                     $('#rname').html(data.name)
                     $('#lname').html(data.name)
                     $('#post1').html(data.post)
+                },
+                error:function(xhr,err){
+                    console.log('异步请求失败'),
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
+            $.ajax({
+                method:'POST',
+                url:'http://127.0.0.1:5050/employee/info',
+                xhrFields:{withCredentials:true},
+                data:`sn=${sn}`,
+                success:function(data,msg,xhr){
+                    $('#formSn').val(data.employee.sn)
+                    $('#formName').val(data.employee.name)
+                    
                 },
                 error:function(xhr,err){
                     console.log('异步请求失败'),
@@ -283,6 +307,7 @@
             $.ajax({
                 method:'GET',
                 url:'http://127.0.0.1:5050/logout',
+                xhrFields:{withCredentials:true},
                 data:``,
                 success:function(data,msg,xhr){
                     //跳转到登录页
@@ -321,7 +346,7 @@
         })
         $('#allDepartment').click(function (){
             let post = $('#post1').html()
-            if(post == '部门经理' || post == '总经理'){
+            if(post == '总经理'){
                 window.location.href = "department_list.html"
             }
             else{
@@ -332,7 +357,7 @@
         })
         $('#addDepartment').click(function (){
             let post = $('#post1').html()
-            if(post == '部门经理' || post == '总经理'){
+            if(post == '总经理'){
                 window.location.href = "department_add.html"
             }
             else{
@@ -342,6 +367,41 @@
             }
         })
 
+        //提交表单
+        $('#updateEmployee').click(function(){
+            let sn = $('#formSn').val()
+            let name = $('#formName').val()
+            let department_sn = $('#setDepartment').val()
+            let post = $('#setPost').val()
+            if(name == ''){
+                $('#modelMsgTitle').html("编辑失败")
+                $('#modelMsgBody').html("姓名不能为空")
+                $('#modelMsg').modal()
+            }
+            else if(department_sn == null||post == null){
+                $('#modelMsgTitle').html("编辑失败")
+                $('#modelMsgBody').html("请选择部门和职务")
+                $('#modelMsg').modal()
+            }
+            else{
+                $.ajax({
+                    method:'POST',
+                    url:'http://127.0.0.1:5050/employee/update',
+                    xhrFields:{withCredentials:true},
+                    data:`sn=${sn}&name=${name}&department_sn=${department_sn}&post=${post}`,
+                    success:function(data,msg,xhr){
+                        $('#modelMsgTitle').html("编辑成功")
+                        $('#modelMsgBody').html("已成功修改")
+                        $('#modelMsg').modal()
+                    },
+                    error:function(xhr,err){
+                        console.log('异步请求失败'),
+                        console.log(xhr)
+                        console.log(err)
+                    }
+                })
+            }
+        })
     </script>
     <!--弹框表示修改结果-->
     <div id="modelMsg" class="modal fade"><!--半透明遮罩-->

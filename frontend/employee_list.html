@@ -244,22 +244,22 @@
         //页面加载时获取数据
         $(document).ready(function(){
             //个人信息
-            //var sn = getQueryVariable("sn")
-            // $.ajax({
-            //     method:'POST',
-            //     url:'http://127.0.0.1:5050/user/info',
-            //     data:`sn=${sn}`,
-            //     success:function(data,msg,xhr){
-            //         $('#rname').html(data.name)
-            //         $('#lname').html(data.name)
-            //         $('#post1').html(data.post)
-            //     },
-            //     error:function(xhr,err){
-            //         console.log('异步请求失败'),
-            //         console.log(xhr)
-            //         console.log(err)
-            //     }
-            // })
+            $.ajax({
+                method:'POST',
+                url:'http://127.0.0.1:5050/info',
+                xhrFields:{withCredentials:true},
+                data:``,
+                success:function(data,msg,xhr){
+                    $('#rname').html(data.name)
+                    $('#lname').html(data.name)
+                    $('#post1').html(data.post)
+                },
+                error:function(xhr,err){
+                    console.log('异步请求失败'),
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
             //加载员工列表
             getEmployeeList()
 
@@ -269,6 +269,7 @@
             $.ajax({
                 method:'GET',
                 url:'http://127.0.0.1:5050/employee/all',
+                xhrFields:{withCredentials:true},
                 data:``,
                 success:function(data,msg,xhr){
                     for(i in data.employees){
@@ -318,6 +319,7 @@
             $.ajax({
                 method:'GET',
                 url:'http://127.0.0.1:5050/logout',
+                xhrFields:{withCredentials:true},
                 data:``,
                 success:function(data,msg,xhr){
                     //跳转到登录页
@@ -383,6 +385,7 @@
             $.ajax({
                 method:'POST',
                 url:'http://127.0.0.1:5050/employee/delete',
+                xhrFields:{withCredentials:true},
                 data:`sn=${name}`,
                 success:function(data,msg,xhr){
                     alert("删除成功")
