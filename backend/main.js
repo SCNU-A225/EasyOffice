@@ -167,12 +167,18 @@ server.get('/logout',function(request, response){
  */
 server.get('/info',function(request, response){
     // console.log(request.session)
-    response.json({
-        sn: request.session.sn,
-        name: request.session.name,
-        department: request.session.department,
-        post: request.session.post
-    })
+    let sn = request.session.sn
+    if(sn == null){
+        response.json({code:401, msg:"请登录"})
+    }else{
+        response.json({
+            code:200,
+            sn: request.session.sn,
+            name: request.session.name,
+            department: request.session.department,
+            post: request.session.post
+        })
+    }
 })
 
 /**
