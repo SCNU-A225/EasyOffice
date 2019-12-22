@@ -140,8 +140,6 @@ server.post('/user/login',function(request,response){
                     let department = result[0].name
                     request.session.department = department
                     response.json({code:200, sn:sn, name:name, post:post, department:department})
-                    console.log(request.session)
-                    // response.location('http://127.0.0.1:5500/frontend/self.html')
                 }
             })
         }else{
@@ -183,12 +181,13 @@ server.get('/info',function(request, response){
 server.post('/password', function(request, response){
     let sn = request.session.sn
     let password = request.body.password
-    let sql1 = 'select * from emplyee where sn=? and password=?'
+    let newPassword = request.body.newPassword
+    let sql1 = 'select * from employee where sn=? and password=?'
     pool.query(sql1, [sn, password],function(err, result){
         if(err) throw err
         if(result.length > 0){
             let sql = 'update employee set password=? where sn=?'
-            pool.query(sql, [password, sn], function(err, result){
+            pool.query(sql, [newPassword, sn], function(err, result){
                 if(err) throw err
                 response.json({code:200, msg:'修改成功'})
             })
@@ -406,6 +405,7 @@ server.post('/department/update',function(request,response){
   */
  server.post('/employee/update',function(request,response){
      let sn = request.body.sn
+     let name = request.body.name
      let department_sn = request.body.department_sn
      let post = request.body.post
      if(department_sn == ''){
@@ -416,8 +416,8 @@ server.post('/department/update',function(request,response){
        response.json({code:402, msg:'请输入职务'})
        return
    }
-     let sql = 'update employee set department_sn=?, post=? where sn=?'
-     pool.query(sql, [department_sn,post,sn], function(err,result){
+     let sql = 'update employee set name=?, department_sn=?, post=? where sn=?'
+     pool.query(sql, [name,department_sn,post,sn], function(err,result){
          if(err) throw err
          response.json({code:200, msg:'修改成功'})
      })
