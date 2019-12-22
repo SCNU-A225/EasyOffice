@@ -25,11 +25,12 @@ let server = express()
 //使用express-session记录用户登录状态，session的认证机制离不开cookie，需要同时使用cookieParser 中间件
 server.use(cookieParser())
 server.use(session({
-    name: 'xuezi_web',   //cookie的name，默认为connect.sid
-    secret: 'login secret',
+    name: 'easyoffice',   //cookie的name，默认为connect.sid
+    secret: 'easyoffice',
     resave: true, //每次请求都重新设置session cookie，假设你的cookie是10分钟过期，每次请求都会再设置10分钟
     saveUninitialized: true, //无论有没有session cookie，每次请求都设置个session cookie 默认给个标示(name)为 connect.sid
     cookie: {
+        secure:false
     //    maxAge: 1000 * 60 * 60 //过期时间 毫秒ms,如果maxAge不设置，默认为null，这样的expire的时间就是浏览器的关闭时间，即每次关闭浏览器的时候，session都会失效。
     } 
 }))
@@ -60,12 +61,16 @@ server.listen(port, function(){
 server.use(express.urlencoded({
     extended:false
 }))
+//允许处理json
+server.use(express.json())
 //自定义中间件，跨域访问
 server.use(function(request,response,next){
-    response.set('Access-Control-Allow-Origin','*')
+    // response.set('Access-Control-Allow-Origin','*')
+    response.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");//前端域名
+    response.header("Access-Control-Allow-Credentials",'true');
+    response.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     next()  //放行，让后续的请求处理方法继续处理
 })
-
 //数据库insert,delete操作返回result示例
 /** insert result:
  *   fieldCount: 0,
@@ -135,6 +140,8 @@ server.post('/user/login',function(request,response){
                     let department = result[0].name
                     request.session.department = department
                     response.json({code:200, sn:sn, name:name, post:post, department:department})
+                    console.log(request.session)
+                    // response.location('http://127.0.0.1:5500/frontend/self.html')
                 }
             })
         }else{
@@ -176,48 +183,21 @@ server.get('/info',function(request, response){
 server.post('/password', function(request, response){
     let sn = request.session.sn
     let password = request.body.password
-    let sql = 'update employee set password=? where sn=?'
-    pool.query(sql, [password, sn], function(err, result){
-        if(err) throw err
-        response.json({code:200, msg:'修改成功'})
-    })
-})
-
-/**
- * 登录成功后跳转首页通过sn获取用户信息
- */
-server.post('/user/info',function(request,response){
-    let sn = request.body.sn
-    let sql = 'select * from employee where sn=?'
-    pool.query(sql,[sn],function(err,result){
+    let sql1 = 'select * from emplyee where sn=? and password=?'
+    pool.query(sql1, [sn, password],function(err, result){
         if(err) throw err
         if(result.length > 0){
-            //session记录用户信息
-            //员工编号
-            request.session.sn = sn
-            //员工姓名
-            let name = result[0].name
-            request.session.name = name
-            //员工职务
-            let post = result[0].post
-            request.session.post = post
-            //员工部门编号
-            request.session.department_sn = result[0].department_sn
-            let sql = 'select * from department where sn=?'
-            pool.query(sql,[result[0].department_sn],function(err,result){
+            let sql = 'update employee set password=? where sn=?'
+            pool.query(sql, [password, sn], function(err, result){
                 if(err) throw err
-                if(result.length > 0){
-                    //员工部门
-                    let department = result[0].name
-                    request.session.department = department
-                    response.json({code:200, sn:sn, name:name, post:post, department:department})
-                }
+                response.json({code:200, msg:'修改成功'})
             })
         }else{
-            response.json({code:403, msg:'没有员工'})
+            response.json({code:401, msg:'原密码错误'})
         }
     })
 })
+
 
 /*
  ******************************
@@ -372,9 +352,6 @@ server.post('/department/update',function(request,response){
 
  /**
   * 2.2删除员工
-  * 删除员工同时删除该员工的报销单
-  * 根据外键约束检查机制删除顺序如下
-  * 报销单明细与报销单处理记录->报销单->员工
   */
  server.post('/employee/delete', function(request, response){
      let sn = request.body.sn
@@ -445,3 +422,390 @@ server.post('/department/update',function(request,response){
          response.json({code:200, msg:'修改成功'})
      })
  })
+
+ /*
+ ******************************
+ *员工管理
+ ****************************** 
+ */
+
+ /**
+  * 3.1创建并保存报销单
+  */
+  server.post('/expense/create',function(request, response){
+    let cause = request.body.cause   
+    let create_sn = request.session.sn
+    let next_deal_sn = create_sn
+    let total_amount = request.body.total_amount  
+    let status = '已创建'
+    let items = request.body.items
+    if(items == null || items == ''){
+        response.json({code:401, msg:'报销单明细不能为空'})
+        return
+    }
+    if(cause == ''){
+        response.json({code:402, msg:'事由不能为空'})
+        return
+    }
+    let sql1 = 'insert into claim_voucher values(null,?,?,NOW(),?,?,?)'
+    let itemsLength = items.length
+    let itemsFinish = 0
+    let sql2Finish = false
+    //创建报销单
+    pool.query(sql1,[cause,create_sn,next_deal_sn,total_amount,status],function(err, result){
+        let claim_voucher_id = result.insertId
+        //创建报销单的处理记录条目
+        let deal_way = '创建'
+        let deal_result = '已保存'
+        let comment = '创建报销单'
+        let sql2 = 'insert into deal_record values(null,?,?,NOW(),?,?,?)'
+        pool.query(sql2,[claim_voucher_id,create_sn,deal_way,deal_result,comment],function(err, result){
+            if(err) throw err
+            sql2Finish = true
+            if(itemsFinish == itemsLength){
+                response.json({code:200, msg:'保存成功'})
+            }
+        })
+        let sql3 = 'insert into claim_voucher_item values(null,?,?,?,?)'
+        for(let i = 0; i < itemsLength; i++){
+            pool.query(sql3,[claim_voucher_id,items[i].item,items[i].amount,items[i].comment],function(err,result){
+                if(err) throw err
+                itemsFinish = itemsFinish + 1
+                if(itemsFinish == itemsLength && sql2Finish){
+                    response.json({code:200, msg:'保存成功'})
+                }
+            })
+        }
+    })
+  })
+
+  /**
+   * TODO
+   * 3.2修改报销单
+   */
+  server.post('/expense/update', function(request,response){
+      let sn = request.session.sn
+      let claim_voucher_id = request.body.id
+      let cause = request.body.cause
+      let total_amount = request.body.total_amount
+      let status = '已修改'
+      let items = request.body.items
+      let itemsLength = items.length
+      let itemsFinish = 0
+      let claimFinish = false
+      let detailFinish = false
+      let sql1 = 'update claim_voucher set cause=?,total_amount=?,status=? where id=?'
+      //修改报销单
+      pool.query(sql1,[cause,total_amount,status,claim_voucher_id],function(err, result){
+          if(err) throw err
+          claimFinish = true
+          if(itemsFinish == itemsLength && detailFinish){
+              response.json({code:200, msg:'修改成功'})
+          }
+      })
+      //修改报销单明细:先删除再插入
+      let sql2 = 'delete from claim_voucher_item where claim_voucher_id=?'
+      pool.query(sql2,[claim_voucher_id],function(err, result){
+          if(err) throw err
+          let sql3 = 'insert into claim_voucher_item values(null,?,?,?,?)'
+          for(let i = 0; i < itemsLength; i++){
+              pool.query(sql3,[claim_voucher_id,items[i].item,items[i].amount,items[i].comment],function(err, result){
+                  if(err) throw err
+                  itemsFinish =  itemsFinish + 1
+                  if(claimFinish && detailFinish && itemsFinish == itemsLength){
+                      response.json({code:200, msg:'修改成功'})
+                  }
+            })
+          }
+      })
+      //处理记录
+      let deal_way = '修改'
+      let deal_result = '已修改'
+      let comment = '修改报销单'
+      let sql4 = 'insert into deal_record values(null,?,?,NOW(),?,?,?)'
+      pool.query(sql4, [claim_voucher_id,sn,deal_way,deal_result,comment],function(err, result){
+          if(err) throw err
+          detailFinish = true
+          if(claimFinish && itemsFinish == itemsLength){
+            response.json({code:200, msg:'修改成功'})
+          }
+      })
+  })
+
+  /**
+   * TODO
+   * 3.3提交报销单
+   */
+  server.post('/expense/submit',function(request, response){
+      let sn = request.session.sn
+    let department_sn = request.session.department_sn
+    let claim_voucher_id = request.body.id
+    let total_amount = request.body.amount
+    let status = '已提交'
+    let submitFinish = false
+    let recordFinish = false
+    //提交给总经理审核
+    if(total_amount >= 5000){
+        let post = '总经理'
+        let sql1 = 'select sn from employee where post=?'
+        pool.query(sql1, [post], function(err, result){
+            if(err) throw err
+            //更新报销单状态与待处理人
+            let sql2 = 'update claim_voucher set next_deal_sn=?, status=?'
+            pool.query(sql2,[result[0].sn, status], function(err, result){
+                submitFinish = true
+                if(recordFinish){
+                    response.json({code:200, msg:'提交成功'})
+                }
+            })
+            //处理记录
+            let deal_way = '提交'
+            let deal_result = '已提交'
+            let comment = '提交报销单'
+            let sql4 = 'insert into deal_record values(null,?,?,NOW(),?,?,?)'
+            pool.query(sql4, [claim_voucher_id,sn,deal_way,deal_result,comment],function(err, result){
+                if(err) throw err
+                recordFinish = true
+                if(submitFinish){
+                    response.json({code:200, msg:'提交成功'})
+                }
+            })
+        })
+    }else{
+        let post = '部门经理'
+        let sql1 = 'select sn from employee where department_sn=? and post=?'
+        pool.query(sql1, [department_sn,post], function(err, result){
+            if(err) throw err
+            //更新报销单状态与待处理人
+            let sql2 = 'update claim_voucher set next_deal_sn=?, status=?'
+            pool.query(sql2,[result[0].sn, status], function(err, result){
+                submitFinish = true
+                if(recordFinish){
+                    response.json({code:200, msg:'提交成功'})
+                }
+            })
+            //处理记录
+            let deal_way = '提交'
+            let deal_result = '已提交'
+            let comment = '提交报销单'
+            let sql4 = 'insert into deal_record values(null,?,?,NOW(),?,?,?)'
+            pool.query(sql4, [claim_voucher_id,sn,deal_way,deal_result,comment],function(err, result){
+                if(err) throw err
+                recordFinish = true
+                if(submitFinish){
+                    response.json({code:200, msg:'提交成功'})
+                }
+            })
+        })
+    }
+  })
+
+  /**
+   * 3.4通过报销单
+   */
+  server.post('/expense/agree', function(request, response){
+      let deal_sn = request.session.sn
+    let claim_voucher_id = request.body.id
+    let comment = request.body.comment
+    let status = '已通过'
+    let post = '财务'
+    let sql1 = 'select sn from employee where post=?'
+    let claimFinish = false
+    let recordFinish = false
+    pool.query(sql1, [post], function(err, result){
+        if(err) throw err
+        //修改报销单状态
+        let sql2 = 'update claim_voucher set next_deal_sn=?,status=? where id=?'
+        pool.query(sql2, [result[0].sn,status,claim_voucher_id], function(err, result){
+            if(err) throw err
+            claimFinish = true
+            if(recordFinish){
+                response.json({code:200, msg:'审核成功'})
+            }
+        })
+        //处理记录
+        let deal_way = '审核'
+        let deal_result = '通过'
+        let sql3 = 'insert into deal_record values(null,?,?,NOW(),?,?,?)'
+        pool.query(sql3, [claim_voucher_id,deal_sn,deal_way,deal_result,comment], function(err, result){
+            if(err) throw err
+            recordFinish = true
+            if(claimFinish){
+                response.json({code:200, msg:'审核成功'})
+            }
+        })
+    })
+  })
+
+  /**
+   * 3.5打回报销单
+   */
+  server.post('/expense/return', function(request, response){
+      let deal_sn = request.session.sn
+    let claim_voucher_id = request.body.id
+    let comment = request.body.comment
+    let status = '已打回'
+    let sql1 = 'select create_sn from claim_voucher where id=?'
+    let claimFinish = false
+    let recordFinish = false
+    pool.query(sql1, [claim_voucher_id], function(err, result){
+        if(err) throw err
+        //修改报销单状态
+        let sql2 = 'update claim_voucher set next_deal_sn=?,status=? where id=?'
+        pool.query(sql2, [result[0].create_sn,status,claim_voucher_id], function(err, result){
+            if(err) throw err
+            claimFinish = true
+            if(recordFinish){
+                response.json({code:200, msg:'审核成功'})
+            }
+        })
+        //处理记录
+        let deal_way = '审核'
+        let deal_result = '打回'
+        let sql3 = 'insert into deal_record values(null,?,?,NOW(),?,?,?)'
+        pool.query(sql3, [claim_voucher_id,deal_sn,deal_way,deal_result,comment], function(err, result){
+            if(err) throw err
+            recordFinish = true
+            if(claimFinish){
+                response.json({code:200, msg:'审核成功'})
+            }
+        })
+    })
+  })
+
+  /**
+   * 3.6拒绝报销单
+   */
+  server.post('/expense/return', function(request, response){
+      let deal_sn = request.session.sn
+    let claim_voucher_id = request.body.id
+    let comment = request.body.comment
+    let status = '已拒绝'
+    let next_deal_sn = '00000' //所有已完成报销单（已拒绝和已打款）待处理人为00000
+    let claimFinish = false
+    let recordFinish = false
+    //修改报销单状态
+    let sql2 = 'update claim_voucher set next_deal_sn=?,status=? where id=?'
+    pool.query(sql2, [next_deal_sn,status,claim_voucher_id], function(err, result){
+        if(err) throw err
+        claimFinish = true
+        if(recordFinish){
+            response.json({code:200, msg:'审核成功'})
+        }
+    })
+    //处理记录
+    let deal_way = '审核'
+    let deal_result = '已拒绝'
+    let sql3 = 'insert into deal_record values(null,?,?,NOW(),?,?,?)'
+    pool.query(sql3, [claim_voucher_id,deal_sn,deal_way,deal_result,comment], function(err, result){
+        if(err) throw err
+        recordFinish = true
+        if(claimFinish){
+            response.json({code:200, msg:'审核成功'})
+        }
+    })
+  })
+
+  /**
+   * 3.7打款报销单
+   */
+  server.post('/expense/pay', function(request, response){
+      let deal_sn = request.session.sn
+    let claim_voucher_id = request.body.id
+    let comment = request.body.comment
+    let status = '已打款'
+    let next_deal_sn = '00000' //所有已完成报销单（已拒绝和已打款）待处理人为00000
+    let claimFinish = false
+    let recordFinish = false
+    //修改报销单状态
+    let sql2 = 'update claim_voucher set next_deal_sn=?,status=? where id=?'
+    pool.query(sql2, [next_deal_sn,status,claim_voucher_id], function(err, result){
+        if(err) throw err
+        claimFinish = true
+        if(recordFinish){
+            response.json({code:200, msg:'审核成功'})
+        }
+    })
+    //处理记录
+    let deal_way = '审核'
+    let deal_result = '已打款'
+    let sql3 = 'insert into deal_record values(null,?,?,NOW(),?,?,?)'
+    pool.query(sql3, [claim_voucher_id,deal_sn,deal_way,deal_result,comment], function(err, result){
+        if(err) throw err
+        recordFinish = true
+        if(claimFinish){
+            response.json({code:200, msg:'审核成功'})
+        }
+    })
+  })
+
+  /**
+   * 3.8查看待处理报销单
+   */
+  server.get('expense/todo', function(request, response){
+      let sn = request.session.sn
+    let resultData = {arr:null}
+    let sql = 'select id, cause, create_time, total_amount, status from claim_voucher where next_deal_sn=?'
+    pool.query(sql,[sn],function(err, result){
+        if(err) throw err
+        resultData.arr = resultData
+        response.json(resultData)
+    })
+  })
+
+/**
+ * 3.9查看个人报销单
+ */
+  server.get('expense/todo', function(request, response){
+      let sn = request.session.sn
+    let resultData = {arr:null}
+    let sql = 'select id, cause, create_time, total_amount, status from claim_voucher where create_sn=?'
+    pool.query(sql,[sn],function(err, result){
+        if(err) throw err
+        resultData.arr = resultData
+        response.json(resultData)
+    })
+  })
+
+  /**
+   * 3.10查看报销单详细
+   */
+  server.post('/expense/detail', function(request, response){
+      let claim_voucher_id = request.body.id
+      let resultData = {info:null, detail:null, record:null}
+      let claimFinish = false
+      let detailFinish = false
+      let recordFinish = false
+      //获取基本信息
+      let sql1 = 'select * from claim_voucher where id = ?'
+      pool.query(sql1, [claim_voucher_id], function(err, result){
+          if(err) throw err
+          resultData.info = result[0]
+          claimFinish = true
+          if(detailFinish && recordFinish){
+              response.json(resultData)
+          }
+      })
+
+      //获取费用明细
+      let sql2 = 'select item, amount, comment from claim_voucher_item where claim_voucher_id=?'
+      pool.query(sql2, [claim_voucher_id], function(err, result){
+          if(err) throw err
+          resultData.detail = result
+          detailFinish = true
+          if(claimFinish && recordFinish){
+              response.json(resultData)
+          }
+      })
+
+      //获取处理记录
+      let sql3 = 'select deal_sn, deal_time, deal_way, deal_result, comment from deal_record where claim_voucher_id=?'
+      pool.query(sql3, [claim_voucher_id], function(err, result){
+          if(err) throw err
+          resultData.record = result
+          recordFinish = true
+          if(claimFinish && detailFinish){
+              response.json(resultData)
+          }
+      })
+  })

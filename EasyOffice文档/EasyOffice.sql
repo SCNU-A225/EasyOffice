@@ -71,22 +71,22 @@ create table employee
 );
 
 alter table claim_voucher add constraint FK_Reference_2 foreign key (next_deal_sn)
-      references employee (sn) on delete restrict on update restrict;
+      references employee (sn);
 
 alter table claim_voucher add constraint FK_Reference_3 foreign key (create_sn)
-      references employee (sn) on delete restrict on update restrict;
+      references employee (sn);
 
 alter table claim_voucher_item add constraint FK_Reference_4 foreign key (claim_voucher_id)
-      references claim_voucher (id) on delete restrict on update restrict;
+      references claim_voucher (id);
 
 alter table deal_record add constraint FK_Reference_5 foreign key (claim_voucher_id)
-      references claim_voucher (id) on delete restrict on update restrict;
+      references claim_voucher (id);
 
 alter table deal_record add constraint FK_Reference_6 foreign key (deal_sn)
-      references employee (sn) on delete restrict on update restrict;
+      references employee (sn);
 
 alter table employee add constraint FK_Reference_1 foreign key (department_sn)
-      references department (sn) on delete restrict on update restrict;
+      references department (sn);
 
 insert into department values('10001','总经理办公室','华师大厦A座225');
 insert into department values('10002','财务部','华师大厦A座225');

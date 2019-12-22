@@ -221,11 +221,12 @@
         <script type="text/javascript" src="js/items.js"></script>
         <script>
             $(document).ready(function(){
-                var sn = getQueryVariable("sn")
+                // var sn = getQueryVariable("sn")
                 $.ajax({
-                    method:'POST',
-                    url:'http://127.0.0.1:5050/user/info',
-                    data:`sn=${sn}`,
+                    method:'GET',
+                    url:'http://127.0.0.1:5050/info',
+                    xhrFields:{withCredentials:true},
+                    data:``,
                     success:function(data,msg,xhr){
                         alert(data.name)
                         $('#rname').html(data.name)
