@@ -181,13 +181,8 @@ server.get('/info',function(request, response){
 server.post('/password', function(request, response){
     let sn = request.session.sn
     let password = request.body.password
-<<<<<<< .mine
     let newPassword = request.body.newPassword
     let sql1 = 'select * from employee where sn=? and password=?'
-=======
-    let newPassword = request.body.newPassword
-    let sql1 = 'select * from emplyee where sn=? and password=?'
->>>>>>> .theirs
     pool.query(sql1, [sn, password],function(err, result){
         if(err) throw err
         if(result.length > 0){
