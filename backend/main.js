@@ -181,8 +181,13 @@ server.get('/info',function(request, response){
 server.post('/password', function(request, response){
     let sn = request.session.sn
     let password = request.body.password
+<<<<<<< .mine
     let newPassword = request.body.newPassword
     let sql1 = 'select * from employee where sn=? and password=?'
+=======
+    let newPassword = request.body.newPassword
+    let sql1 = 'select * from emplyee where sn=? and password=?'
+>>>>>>> .theirs
     pool.query(sql1, [sn, password],function(err, result){
         if(err) throw err
         if(result.length > 0){
@@ -379,13 +384,25 @@ server.post('/department/update',function(request,response){
   * 2.4查找所有员工
   */
  server.get('/employee/all',function(request, response){
-    let sql = 'select employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName from employee,department where employee.department_sn = department.sn'
-    pool.query(sql, function(err, result){
-        if(err) throw err
-        let resultData = {employees:null}
-        resultData.employees = result
-        response.json(resultData)
-    })
+    let post = request.session.post
+    if(post == '总经理'){
+        let sql = 'select employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName from employee,department where employee.department_sn = department.sn'
+        pool.query(sql, function(err, result){
+            if(err) throw err
+            let resultData = {employees:null}
+            resultData.employees = result
+            response.json(resultData)
+        })
+    }else{
+        let department_sn = request.body.department_sn
+        let sql = 'select employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName from employee,department where employee.department_sn = department.sn and employee.department_sn=?'
+        pool.query(sql, [department_sn,department_sn],function(err, result){
+            if(err) throw err
+            let resultData = {employees:null}
+            resultData.employees = result
+            response.json(resultData)
+        })
+    }
  })
 
  /**
