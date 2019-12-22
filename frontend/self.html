@@ -15,7 +15,7 @@
         <div id="main">
             <header class="navbar navbar-fixed-top navbar-shadow">
                 <div class="navbar-branding">
-                    <a class="navbar-brand" href="dashboard.html">
+                    <a class="navbar-brand" href="#">
                         <b>EasyOffice</b>OA
                     </a>
                     <span id="toggle_sidemenu_l" class="ad ad-lines"></span>
@@ -23,23 +23,23 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown menu-merge">
                         <a href="#" class="dropdown-toggle fw600 p15" data-toggle="dropdown">
-                            <img src="/assets/img/avatars/5.jpg" alt="avatar" class="mw30 br64">
+                            <img src="./img/avatars/5.jpg" alt="avatar" class="mw30 br64">
                             <span id="rname" class="hidden-xs pl15">  </span>
                             <span class="caret caret-tp hidden-xs"></span>
                         </a>
                         <ul class="dropdown-menu list-group dropdown-persist w250" role="menu">
                             <li class="list-group-item">
-                                <a href="/self" class="animated animated-short fadeInUp">
+                                <a href="./self.html" class="animated animated-short fadeInUp">
                                     <span class="fa fa-user"></span> 个人信息
                                     <span class="label label-warning"></span>
                                 </a>
                             </li>
                             <li class="list-group-item">
-                                <a href="/to_change_password" class="animated animated-short fadeInUp">
+                                <a href="./change_password.html" id="setPaswd" class="animated animated-short fadeInUp">
                                     <span class="fa fa-gear"></span> 设置密码 </a>
                             </li>
                             <li class="dropdown-footer">
-                                <a href="/quit" class="">
+                                <a href="#" onclick="quit()" class="">
                                     <span class="fa fa-power-off pr5"></span> 退出 </a>
                             </li>
                         </ul>
@@ -52,16 +52,16 @@
                         <div class="sidebar-widget author-widget">
                             <div class="media">
                                 <a class="media-left" href="#">
-                                    <img src="assets/img/avatars/3.jpg" class="img-responsive">
+                                    <img src="./img/avatars/5.jpg" class="img-responsive">
                                 </a>
                                 <div class="media-body">
                                     <div class="media-author">
                                         <span id="lname"></span>
                                         --
-                                        <span is="post"></span>
+                                        <span id="post1"></span>
                                     </div>
                                     <div class="media-links">
-                                        <a href="/quit">退出</a>
+                                        <a  href="#" onclick="quit()">退出</a>
                                     </div>
                                 </div>
                             </div>
@@ -78,22 +78,22 @@
                     <ul class="nav sidebar-menu">
                         <li class="sidebar-label pt20">日常管理</li>
                         <li>
-                            <a href="/claim_voucher/deal">
+                            <a href="./claim_voucher_deal.html">
                                 <span class="glyphicon glyphicon-book"></span>
                                 <span class="sidebar-title">待处理报销单</span>
                                 <span class="sidebar-title-tray">
-                        <span class="label label-xs bg-primary">New</span>
-                      </span>
+                                    <span class="label label-xs bg-primary">New</span>
+                                </span>
                             </a>
                         </li>
                         <li class="active">
-                            <a href="/claim_voucher/self">
+                            <a href="./claim_voucher_self.html">
                                 <span class="glyphicon glyphicon-home"></span>
                                 <span class="sidebar-title">个人报销单</span>
                             </a>
                         </li>
                         <li>
-                            <a href="/claim_voucher/to_add">
+                            <a href="./claim_voucher_add.html">
                                 <span class="fa fa-calendar"></span>
                                 <span class="sidebar-title">填写报销单</span>
                             </a>
@@ -107,11 +107,11 @@
                             </a>
                             <ul class="nav sub-nav">
                                 <li>
-                                    <a href="/employee/list">
+                                    <a href="#" id="allEmployee">
                                         <span class="glyphicon glyphicon-calendar"></span> 所有员工 </a>
                                 </li>
                                 <li class="active">
-                                    <a href="/employee/to_add">
+                                    <a href="#" id="addEmployee">
                                         <span class="glyphicon glyphicon-check"></span> 添加员工 </a>
                                 </li>
                             </ul>
@@ -124,11 +124,11 @@
                             </a>
                             <ul class="nav sub-nav">
                                 <li>
-                                    <a href="/department/list">
+                                    <a href="#" id="allDepartment">
                                         <span class="glyphicon glyphicon-calendar"></span> 所有部门 </a>
                                 </li>
                                 <li class="active">
-                                    <a href="/department/to_add">
+                                    <a href="#" id="addDepartment">
                                         <span class="glyphicon glyphicon-check"></span> 添加部门 </a>
                                 </li>
                             </ul>
@@ -220,6 +220,7 @@
         <script type="text/javascript" src="js/pages.js"></script>
         <script type="text/javascript" src="js/items.js"></script>
         <script>
+            //页面加载时就获取个人信息数据
             $(document).ready(function(){
                 // var sn = getQueryVariable("sn")
                 $.ajax({
@@ -228,13 +229,13 @@
                     xhrFields:{withCredentials:true},
                     data:``,
                     success:function(data,msg,xhr){
-                        alert(data.name)
                         $('#rname').html(data.name)
                         $('#lname').html(data.name)
                         $('#sn').html(data.sn)
                         $('#name').html(data.name)
                         $('#department').html(data.department)
                         $('#post').html(data.post)
+                        $('#post1').html(data.post)
                     },
                     error:function(xhr,err){
                         console.log('异步请求失败'),
@@ -244,6 +245,72 @@
                 })
             })
 
+            //注销session,退出登录
+            function quit()
+            {
+                $.ajax({
+                    method:'GET',
+                    url:'http://127.0.0.1:5050/logout',
+                    data:``,
+                    success:function(data,msg,xhr){
+                        //跳转到登录页
+                        window.location.href = "login.html"
+                    },
+                    error:function(xhr,err){
+                        console.log('异步请求失败'),
+                        console.log(xhr)
+                        console.log(err)
+                    }
+                })
+            }
+
+            //判断 部门管理 员工管理 的用户权限
+            $('#allEmployee').click(function (){
+                let post = $('#post1').html()
+                if(post == '部门经理' || post == '总经理'){
+                    window.location.href = "employee_list.html"
+                }
+                else{
+                    $('#modelMsgTitle').html("无法访问")
+                    $('#modelMsgBody').html("您的权限不够")
+                    $('#modelMsg').modal()
+                }
+            })
+            $('#addEmployee').click(function (){
+                let post = $('#post1').html()
+                if(post == '部门经理' || post == '总经理'){
+                    window.location.href = "employee_add.html"
+                }
+                else{
+                    $('#modelMsgTitle').html("无法访问")
+                    $('#modelMsgBody').html("您的权限不够")
+                    $('#modelMsg').modal()
+                }
+            })
+            $('#allDepartment').click(function (){
+                let post = $('#post1').html()
+                if(post == '部门经理' || post == '总经理'){
+                    window.location.href = "department_list.html"
+                }
+                else{
+                    $('#modelMsgTitle').html("无法访问")
+                    $('#modelMsgBody').html("您的权限不够")
+                    $('#modelMsg').modal()
+                }
+            })
+            $('#addDepartment').click(function (){
+                let post = $('#post1').html()
+                if(post == '部门经理' || post == '总经理'){
+                    window.location.href = "department_add.html"
+                }
+                else{
+                    $('#modelMsgTitle').html("无法访问")
+                    $('#modelMsgBody').html("您的权限不够")
+                    $('#modelMsg').modal()
+                }
+            })
+
+            //获取url中的id号
             function getQueryVariable(variable)
             {
                 var query = window.location.search.substring(1);
@@ -255,6 +322,26 @@
                 return(false);
             }
         </script>
+        <!--弹框表示修改结果-->
+        <div id="modelMsg" class="modal fade"><!--半透明遮罩-->
+            <div class="modal-dialog modal-sm"><!--对话框的尺寸，位置-->
+                <div class="modal-content"><!--边框，倒角，背景色-->
+                    <!--头部-->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modelMsgTitle"></h4>
+                    </div>
+                    <!--主体-->
+                    <div class="modal-body">
+                        <p>
+                            <span id="modelMsgBody"></span>
+                        </p>
+                    </div>
+                    <!--尾部-->
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-info">确定</button>
+                </div>
+            </div>
+        </div>
     </body>
 
 
