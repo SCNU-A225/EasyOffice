@@ -189,25 +189,7 @@
                                             <th>操作</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <c:forEach items="${list}" var="dept">
-                                        <tr class="message-unread">
-                                            <td class="hidden-xs">
-                                                <label class="option block mn">
-                                                    <input type="checkbox" name="mobileos" value="FR">
-                                                    <span class="checkbox mn"></span>
-                                                </label>
-                                            </td>
-                                            <td>${dept.sn}</td>
-                                            <td>${dept.name}</td>
-                                            <td>${dept.address}</td>
-                                            <td>
-                                                <a href="/department/to_update?sn=${dept.sn}">编辑</a>
-                                                <a href="/department/remove?sn=${dept.sn}">删除</a>
-                                            </td>
-                                        </tr>
-                                        </c:forEach>
-                                        </tbody>
+                                        
                                     </table>
                                 </div>
                             </div>
@@ -261,15 +243,21 @@
     <script>
         //页面加载时获取个人信息
         $(document).ready(function(){
-            var sn = getQueryVariable("sn")
             $.ajax({
-                method:'POST',
-                url:'http://127.0.0.1:5050/user/info',
-                data:`sn=${sn}`,
+                method:'GET',
+                url:'http://127.0.0.1:5050/info',
+                xhrFields:{withCredentials:true},
+                data:``,
                 success:function(data,msg,xhr){
-                    $('#rname').html(data.name)
-                    $('#lname').html(data.name)
-                    $('#post1').html(data.post)
+                    if(data.code==200){
+                        $('#rname').html(data.name)
+                        $('#lname').html(data.name)
+                        $('#post1').html(data.post)
+                    }
+                    else{
+                        alert(data.msg)
+                        window.location.href = "login.html"
+                    }
                 },
                 error:function(xhr,err){
                     console.log('异步请求失败'),
@@ -277,7 +265,43 @@
                     console.log(err)
                 }
             })
+            //加载部门列表
+            getDepartmentList()
         })
+
+        function getDepartmentList(){
+            $.ajax({
+                method:'GET',
+                url:'http://127.0.0.1:5050/department/all',
+                xhrFields:{withCredentials:true},
+                data:``,
+                success:function(data,msg,xhr){
+                    for(i in data.departmentList){
+                        let row = '<tr class="message-unread">\
+                                    <td class="hidden-xs">\
+                                        <label class="option block mn">\
+                                            <input type="checkbox" name="mobileos" value="FR">\
+                                                <span class="checkbox mn"></span>\
+                                                </label>\
+                                    </td>\
+                                    <td>'+data.departmentList[i].sn+'</td>\
+                                    <td>'+data.departmentList[i].name+'</td>\
+                                    <td>'+data.departmentList[i].address+'</td>\
+                                    <td>\
+                                        <a href="./department_update.html?sn='+data.departmentList[i].sn+'">编辑</a>\
+                                        <a href="#" onclick="delDepartment(this)" name="'+data.departmentList[i].sn+'">删除</a>\
+                                    </td>\
+                                    </tr>'
+                        $('#message-table').append(row)
+                    }
+                },
+                error:function(xhr,err){
+                    console.log('异步请求失败'),
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
+        }
 
         function getQueryVariable(variable)
         {
@@ -296,6 +320,7 @@
             $.ajax({
                 method:'GET',
                 url:'http://127.0.0.1:5050/logout',
+                xhrFields:{withCredentials:true},
                 data:``,
                 success:function(data,msg,xhr){
                     //跳转到登录页
@@ -334,7 +359,7 @@
         })
         $('#allDepartment').click(function (){
             let post = $('#post1').html()
-            if(post == '部门经理' || post == '总经理'){
+            if(post == '总经理'){
                 window.location.href = "department_list.html"
             }
             else{
@@ -345,7 +370,7 @@
         })
         $('#addDepartment').click(function (){
             let post = $('#post1').html()
-            if(post == '部门经理' || post == '总经理'){
+            if( post == '总经理'){
                 window.location.href = "department_add.html"
             }
             else{
@@ -355,6 +380,31 @@
             }
         })
 
+        function delDepartment(e){
+            let name = $(e).attr("name")
+            $.ajax({
+                method:'POST',
+                url:'http://127.0.0.1:5050/department/delete',
+                xhrFields:{withCredentials:true},
+                data:`sn=${name}`,
+                success:function(data,msg,xhr){
+                    if(data.code==200){
+                        alert("删除成功")
+                        window.location.reload()
+                    }
+                    else{
+                        $('#modelMsgTitle').html("删除失败")
+                        $('#modelMsgBody').html("删除失败")
+                        $('#modelMsg').modal()
+                    }
+                },
+                error:function(xhr,err){
+                    console.log('异步请求失败'),
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
+        }
     </script>
     <!--弹框表示修改结果-->
     <div id="modelMsg" class="modal fade"><!--半透明遮罩-->

@@ -294,9 +294,22 @@ server.post('/department/update',function(request,response){
     let sql = 'update department set name=?, address=? where sn=?'
     pool.query(sql, [name, address, sn], function(err, result){
         if(err) throw err
-        response.json({cond:200, msg:'更新成功'})
+        response.json({code:200, msg:'更新成功'})
     })
 })
+
+ /**
+  * 1.5获取特定部门信息
+  */
+ server.post('/department/info',function(request,response){
+    let sn = request.body.sn
+    let sql = 'select * from department where sn = ?'
+    pool.query(sql,[sn],function(err, result){
+        if(err) throw err
+        response.json({department:result[0]})
+    })
+ })
+
 
 /*
  ******************************
@@ -310,7 +323,7 @@ server.post('/department/update',function(request,response){
  server.post('/employee/add',function(request,response){
      let sn = request.body.sn
      let name = request.body.name
-     let password = request.body.password
+     let password = '000000'
      let department_sn = request.body.department_sn
      let post = request.body.post
      if(sn == ''){
@@ -319,10 +332,6 @@ server.post('/department/update',function(request,response){
      }
      if(name == ''){
         response.json({code:402, msg:'请输入员工姓名'})
-        return
-    }
-    if(password == ''){
-        response.json({code:403, msg:'请输入密码'})
         return
     }
     if(department_sn == ''){

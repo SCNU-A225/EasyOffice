@@ -239,15 +239,21 @@
     <script>
         //页面加载时获取个人信息
         $(document).ready(function(){
-            var sn = getQueryVariable("sn")
             $.ajax({
-                method:'POST',
-                url:'http://127.0.0.1:5050/user/info',
-                data:`sn=${sn}`,
+                method:'GET',
+                url:'http://127.0.0.1:5050/info',
+                xhrFields:{withCredentials:true},
+                data:``,
                 success:function(data,msg,xhr){
-                    $('#rname').html(data.name)
-                    $('#lname').html(data.name)
-                    $('#post1').html(data.post)
+                    if(data.code==200){
+                        $('#rname').html(data.name)
+                        $('#lname').html(data.name)
+                        $('#post1').html(data.post)
+                    }
+                    else{
+                        alert(data.msg)
+                        window.location.href = "login.html"
+                    }
                 },
                 error:function(xhr,err){
                     console.log('异步请求失败'),
@@ -274,6 +280,7 @@
             $.ajax({
                 method:'GET',
                 url:'http://127.0.0.1:5050/logout',
+                xhrFields:{withCredentials:true},
                 data:``,
                 success:function(data,msg,xhr){
                     //跳转到登录页
@@ -312,7 +319,7 @@
         })
         $('#allDepartment').click(function (){
             let post = $('#post1').html()
-            if(post == '部门经理' || post == '总经理'){
+            if(post == '总经理'){
                 window.location.href = "department_list.html"
             }
             else{
@@ -323,7 +330,7 @@
         })
         $('#addDepartment').click(function (){
             let post = $('#post1').html()
-            if(post == '部门经理' || post == '总经理'){
+            if(post == '总经理'){
                 window.location.href = "department_add.html"
             }
             else{

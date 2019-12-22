@@ -178,9 +178,9 @@
                                                 <label for="sn" class="field select">
                                                     <select name="setDe" id="setDepartment" class="gui-input">
                                                         <option value="1" selected disabled style="display: none;">--所属部门--</option>
-                                                        <option value="财务部">财务部</option>
-                                                        <option value="事业部">事业部</option>
-                                                        <option value="总经理办公室">总经理办公室</option>
+                                                        <option value="10002">财务部</option>
+                                                        <option value="10003">事业部</option>
+                                                        <option value="10001">总经理办公室</option>
                                                     </select>
                                                     <i class="arrow double"></i>
                                                 </label>
@@ -262,9 +262,15 @@
                 xhrFields:{withCredentials:true},
                 data:``,
                 success:function(data,msg,xhr){
-                    $('#rname').html(data.name)
-                    $('#lname').html(data.name)
-                    $('#post1').html(data.post)
+                    if(data.code==200){
+                        $('#rname').html(data.name)
+                        $('#lname').html(data.name)
+                        $('#post1').html(data.post)
+                    }
+                    else{
+                        alert(data.msg)
+                        window.location.href = "login.html"
+                    }
                 },
                 error:function(xhr,err){
                     console.log('异步请求失败'),
@@ -390,9 +396,16 @@
                     xhrFields:{withCredentials:true},
                     data:`sn=${sn}&name=${name}&department_sn=${department_sn}&post=${post}`,
                     success:function(data,msg,xhr){
-                        $('#modelMsgTitle').html("编辑成功")
-                        $('#modelMsgBody').html("已成功修改")
-                        $('#modelMsg').modal()
+                        if(data.code==200){
+                            $('#modelMsgTitle').html("编辑成功")
+                            $('#modelMsgBody').html("已成功修改")
+                            $('#modelMsg').modal()
+                        }
+                        else{
+                            $('#modelMsgTitle').html("编辑失败")
+                            $('#modelMsgBody').html(data.msg)
+                            $('#modelMsg').modal()
+                        }
                     },
                     error:function(xhr,err){
                         console.log('异步请求失败'),
