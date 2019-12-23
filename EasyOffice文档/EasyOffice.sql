@@ -88,10 +88,12 @@ alter table deal_record add constraint FK_Reference_6 foreign key (deal_sn)
 alter table employee add constraint FK_Reference_1 foreign key (department_sn)
       references department (sn);
 
+insert into department values('00000','管理员','管理员');
 insert into department values('10001','总经理办公室','华师大厦A座225');
 insert into department values('10002','财务部','华师大厦A座225');
 insert into department values('10003','事业部','华师大厦A座225');
 
+insert into employee values('00000','000000','管理员','00000','管理员');
 insert into employee values('10001','000000','许子昌','10001','总经理');
 insert into employee values('10002','000000','蒋健','10002','财务');
 insert into employee values('10003','000000','彭敏轩','10003','部门经理');
