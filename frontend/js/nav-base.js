@@ -1,4 +1,8 @@
 $(window).ready(() => {
+    if(!sessionStorage.getItem('sn')){
+        alert("请先登录")
+        location.href = 'login.html'
+    }
     if(sessionStorage.post != '总经理'){
         $('#departmentManagement').addClass("hidden")
         if(sessionStorage.post != '部门经理'){
