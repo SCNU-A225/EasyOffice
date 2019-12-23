@@ -245,7 +245,7 @@
                         } else if(each.status=="已提交"){
                             html += `<a href="claim_voucher_check.html?id=${each.id}">审核</a> &nbsp`
                         } else if(each.status=="已通过"){
-                            html += `<a href="#">打款</a> &nbsp`
+                            html += `<a href="claim_voucher_check.html?id=${each.id}">审核打款</a> &nbsp`
                         }
                         html += `<a href="claim_voucher_detail.html?id=${each.id}">详细信息</a> &nbsp`
    

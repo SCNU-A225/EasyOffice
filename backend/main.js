@@ -707,7 +707,7 @@ server.post('/department/update',function(request,response){
   /**
    * 3.6拒绝报销单
    */
-  server.post('/expense/return', function(request, response){
+  server.post('/expense/refuse', function(request, response){
       let deal_sn = request.session.sn
     let claim_voucher_id = request.body.id
     let comment = request.body.comment

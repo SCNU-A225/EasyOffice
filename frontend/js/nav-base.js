@@ -17,16 +17,16 @@ $(window).ready(() => {
 
 //注销session,退出登录
 function quit(){
+    sessionStorage.removeItem("sn")
+    sessionStorage.removeItem("name")
+    sessionStorage.removeItem("department")
+    sessionStorage.removeItem("post")
     $.ajax({
         method:'GET',
         url:'http://127.0.0.1:5050/logout',
         xhrFields:{withCredentials:true},
         data:``,
         success:function(data,msg,xhr){
-            sessionStorage.removeItem("sn")
-            sessionStorage.removeItem("name")
-            sessionStorage.removeItem("department")
-            sessionStorage.removeItem("post")
             //跳转到登录页
             window.location.href = "login.html"
         },
