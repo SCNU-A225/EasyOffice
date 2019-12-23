@@ -102,7 +102,7 @@
                         <li id="employeeManagement">
                             <a class="accordion-toggle" href="#">
                                 <span class="glyphicon glyphicon-check"></span>
-                                <span class="sidebar-title">员工管理</span>
+                                <span class="sidebar-title hid">员工管理</span>
                                 <span class="caret"></span>
                             </a>
                             <ul class="nav sub-nav">
@@ -155,13 +155,13 @@
                                         <div class="hidden-xs hidden-sm col-md-3">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default light">
-                                                    <i class="fa fa-refresh"></i>
+                                                    <i class="fa fa-refresh" onclick="window.location.reload()"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-default light">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-default light">
-                                                    <i class="fa fa-plus" onclick="javascript:window.location.href='/claim_voucher/to_add';"></i>
+                                                    <i class="fa fa-plus" onclick="window.location.href='claim_voucher_add.html'"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -182,45 +182,15 @@
                                         <thead>
                                         <tr class="">
                                             <th class="text-center hidden-xs">Select</th>
-                                            <th class="hidden-xs">事由</th>
-                                            <th>状态</th>
-                                            <th class="hidden-xs">创建人</th>
-                                            <th class="hidden-xs">金额</th>
-                                            <th class="text-center">创建时间</th>
+                                            <th>事由</th>
+                                            <th class="hidden-xs">状态</th>
+                                            <th>创建人</th>
+                                            <th>金额</th>
+                                            <th class="text-center hidden-xs">创建时间</th>
                                             <th>操作</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <c:forEach items="${list}" var="cv">
-                                        <tr class="message-unread">
-                                            <td class="hidden-xs">
-                                                <label class="option block mn">
-                                                    <input type="checkbox" name="mobileos" value="FR">
-                                                    <span class="checkbox mn"></span>
-                                                </label>
-                                            </td>
-                                            <td>${cv.cause}</td>
-                                            <td class="hidden-xs">
-                                                <span class="badge badge-warning mr10 fs11">${cv.status}</span>
-                                            </td>
-                                            <td>${cv.creater.name}</td>
-                                            <td class="text-center fw600">${cv.totalAmount}</td>
-                                            <td><spring:eval expression="cv.createTime"/></td>
-                                            <td>
-                                                <c:if test="${cv.status==Contant.CLAIMVOUCHER_CREATED || cv.status==Contant.CLAIMVOUCHER_BACK}">
-                                                    <a href="/claim_voucher/to_update?id=${cv.id}">修改</a>
-                                                    <a href="/claim_voucher/submit?id=${cv.id}">提交</a>
-                                                </c:if>
-                                                <c:if test="${cv.status==Contant.CLAIMVOUCHER_SUBMIT || cv.status==Contant.CLAIMVOUCHER_RECHECK}">
-                                                    <a href="/claim_voucher/to_check?id=${cv.id}">审核</a>
-                                                </c:if>
-                                                <c:if test="${cv.status==Contant.CLAIMVOUCHER_APPROVED}">
-                                                    <a href="/claim_voucher/to_check?id=${cv.id}">打款</a>
-                                                </c:if>
-                                                <a href="/claim_voucher/detail?id=${cv.id}">详细信息</a>
-                                            </td>
-                                        </tr>
-                                        </c:forEach>
+                                        <tbody id="expenseList">
                                         </tbody>
                                     </table>
                                 </div>
@@ -230,38 +200,7 @@
                 </section>
             </section>
         </div>
-    <style>
-        /* demo page styles */
-        body { min-height: 2300px; }
-
-        .content-header b,
-        .admin-form .panel.heading-border:before,
-        .admin-form .panel .heading-border:before {
-            transition: all 0.7s ease;
-        }
-        /* responsive demo styles */
-        @media (max-width: 800px) {
-            .admin-form .panel-body { padding: 18px 12px; }
-        }
-    </style>
-
-    <style>
-        .ui-datepicker select.ui-datepicker-month,
-        .ui-datepicker select.ui-datepicker-year {
-            width: 48%;
-            margin-top: 0;
-            margin-bottom: 0;
-
-            line-height: 25px;
-            text-indent: 3px;
-
-            color: #888;
-            border-color: #DDD;
-            background-color: #FDFDFD;
-
-            -webkit-appearance: none; /*Optionally disable dropdown arrow*/
-        }
-    </style>
+    
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/jquery-ui.min.js"></script>
     <script src="js/jquery.validate.min.js"></script>
@@ -271,30 +210,73 @@
     <script src="js/demo.js"></script>
     <script src="js/main.js"></script>
     <script type="text/javascript" src="js/pages.js"></script>
-    <script type="text/javascript" src="js/items.js"></script>
     <script src="js/base.js"></script>
     <script src="js/nav-base.js"></script>
     <script>
-
+        $(window).ready(() => {
+            $.ajax({
+                method:'GET',
+                url:'http://127.0.0.1:5050/expense/todo',
+                xhrFields:{withCredentials:true},
+                success:function(data,msg,xhr){
+                    let html = ``
+                    for(let each of data.arr){
+                        let time = each.create_time.split("T")[0]
+                        html += `
+                        <tr class="message-unread">
+                            <td class="hidden-xs">
+                                <label class="option block mn">
+                                    <input type="checkbox" name="mobileos" value="FR">
+                                    <span class="checkbox mn"></span>
+                                </label>
+                            </td>
+                            <td>${each.cause}</td>
+                            <td class="hidden-xs">
+                                <span class="badge badge-warning mr10 fs11">${each.status}</span>
+                            </td>
+                            <td>${each.name}</td>
+                            <td>${each.total_amount}</td>
+                            <td class="text-center hidden-xs">${time}</td>
+                            <td>
+                        `
+                        if(each.status=="已创建"||each.status=="已打回"){
+                            html += `<a href="claim_voucher_update.html?id=${each.id}">修改</a> &nbsp 
+                                    <a href="#">提交</a> &nbsp`
+                        } else if(each.status=="已提交"){
+                            html += `<a href="claim_voucher_check.html?id=${each.id}">审核</a> &nbsp`
+                        } else if(each.status=="已通过"){
+                            html += `<a href="#">打款</a> &nbsp`
+                        }
+                        html += `<a href="claim_voucher_detail.html?id=${each.id}">详细信息</a> &nbsp`
+   
+                        html += `
+                            </td>
+                        </tr>
+                        `
+                    }
+                    $('#expenseList').html(html)
+                },
+                error:function(xhr,err){
+                    alert('异步请求失败')
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
+        })
 
     </script>
-    <!--弹框表示修改结果-->
-    <div id="modelMsg" class="modal fade"><!--半透明遮罩-->
-        <div class="modal-dialog modal-sm"><!--对话框的尺寸，位置-->
-            <div class="modal-content"><!--边框，倒角，背景色-->
-                <!--头部-->
+    <div id="modelMsg" class="modal fade">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="modelMsgTitle"></h4>
                 </div>
-                <!--主体-->
                 <div class="modal-body">
-                    <p>
-                        <span id="modelMsgBody"></span>
-                    </p>
+                    <p><span id="modelMsgBody"></span></p>
                 </div>
-                <!--尾部-->
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-info">确定</button>
+                </div>
             </div>
         </div>
     </div>

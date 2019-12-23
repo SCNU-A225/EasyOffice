@@ -119,7 +119,7 @@ server.post('/user/login',function(request,response){
         response.json({code:402, msg:'请输入密码'})
         return
     }
-    let sql = 'select * from employee where sn=? and password=?'
+    let sql = 'SELECT * FROM employee WHERE sn=? and password=?'
     pool.query(sql,[sn,password],function(err,result){
         if(err) throw err
         if(result.length > 0){
@@ -134,7 +134,7 @@ server.post('/user/login',function(request,response){
             request.session.post = post
             //员工部门编号
             request.session.department_sn = result[0].department_sn
-            let sql = 'select * from department where sn=?'
+            let sql = 'SELECT * FROM department WHERE sn=?'
             pool.query(sql,[result[0].department_sn],function(err,result){
                 if(err) throw err
                 if(result.length > 0){
@@ -190,11 +190,11 @@ server.post('/password', function(request, response){
     let sn = request.session.sn
     let password = request.body.password
     let newPassword = request.body.newPassword
-    let sql1 = 'select * from employee where sn=? and password=?'
+    let sql1 = 'SELECT * FROM employee WHERE sn=? and password=?'
     pool.query(sql1, [sn, password],function(err, result){
         if(err) throw err
         if(result.length > 0){
-            let sql = 'update employee set password=? where sn=?'
+            let sql = 'update employee set password=? WHERE sn=?'
             pool.query(sql, [newPassword, sn], function(err, result){
                 if(err) throw err
                 response.json({code:200, msg:'修改成功'})
@@ -231,7 +231,7 @@ server.post('/password', function(request, response){
         response.json({code:403, msg:'请输入部门地址'})
         return
      }
-     let sql1 = 'select * from department where sn=? or name=?'
+     let sql1 = 'SELECT * FROM department WHERE sn=? or name=?'
      pool.query(sql1, [sn, name], function(err, result){
          if(err) throw err
          if(result.length > 0){
@@ -254,10 +254,10 @@ server.post('/password', function(request, response){
   */
  server.post('/department/delete',function(request,response){
      let sn = request.body.sn
-     let sql1 = 'delete from employee where department_sn=?'
+     let sql1 = 'delete FROM employee WHERE department_sn=?'
      pool.query(sql1, [sn], function(err, result){
          if(err) throw err
-         let sql2 = 'delete from department where sn=?'
+         let sql2 = 'delete FROM department WHERE sn=?'
          pool.query(sql2, [sn], function(err, result){
              if(err) throw err
              response.json({code:200, msg:'删除成功'})
@@ -269,7 +269,7 @@ server.post('/password', function(request, response){
   * 1.3查找所有部门
   */
  server.get('/department/all',function(request,response){
-     let sql = 'select * from department'
+     let sql = 'SELECT * FROM department'
      let resData = {departmentList:null}
      pool.query(sql,function(err, result){
          if(err) throw err
@@ -293,7 +293,7 @@ server.post('/department/update',function(request,response){
        response.json({code:402, msg:'请输入部门地址'})
        return
     }
-    let sql = 'update department set name=?, address=? where sn=?'
+    let sql = 'update department set name=?, address=? WHERE sn=?'
     pool.query(sql, [name, address, sn], function(err, result){
         if(err) throw err
         response.json({code:200, msg:'更新成功'})
@@ -305,7 +305,7 @@ server.post('/department/update',function(request,response){
   */
  server.post('/department/info',function(request,response){
     let sn = request.body.sn
-    let sql = 'select * from department where sn = ?'
+    let sql = 'SELECT * FROM department WHERE sn = ?'
     pool.query(sql,[sn],function(err, result){
         if(err) throw err
         response.json({department:result[0]})
@@ -344,13 +344,13 @@ server.post('/department/update',function(request,response){
         response.json({code:405, msg:'请输入职务'})
         return
     }
-     let sql1 = 'select * from employee where sn=?'
+     let sql1 = 'SELECT * FROM employee WHERE sn=?'
      pool.query(sql1, [sn], function(err, result){
          if(err) throw err
          if(result.length > 0){
              response.json({code:501, msg:'员工编号已存在'})
          }else{
-             let sql2 = 'select * from department where sn=?'
+             let sql2 = 'SELECT * FROM department WHERE sn=?'
              pool.query(sql2, [department_sn], function(err, result){
                  if(result.length > 0){
                     let sql3 = 'insert into employee values(?,?,?,?,?)'
@@ -371,7 +371,7 @@ server.post('/department/update',function(request,response){
   */
  server.post('/employee/delete', function(request, response){
      let sn = request.body.sn
-     let sql = 'delete from employee where sn=?'
+     let sql = 'delete FROM employee WHERE sn=?'
      pool.query(sql, [sn], function(err, result){
          if(err) throw err
          response.json({code:200, msg:'删除成功'})
@@ -383,7 +383,7 @@ server.post('/department/update',function(request,response){
   */
  server.post('/employee/departlist',function(request, response){
      let department_sn = request.body.department_sn
-     let sql = 'select employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName from employee,department where employee.department_sn = department.sn and employee.department_sn=?'
+     let sql = 'SELECT employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName FROM employee,department WHERE employee.department_sn = department.sn and employee.department_sn=?'
      pool.query(sql, [department_sn,department_sn],function(err, result){
          if(err) throw err
          let resultData = {employees:null}
@@ -398,7 +398,7 @@ server.post('/department/update',function(request,response){
  server.get('/employee/all',function(request, response){
     let post = request.session.post
     if(post == '总经理'){
-        let sql = 'select employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName from employee,department where employee.department_sn = department.sn'
+        let sql = 'SELECT employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName FROM employee,department WHERE employee.department_sn = department.sn'
         pool.query(sql, function(err, result){
             if(err) throw err
             let resultData = {employees:null}
@@ -407,7 +407,7 @@ server.post('/department/update',function(request,response){
         })
     }else{
         let department_sn = request.body.department_sn
-        let sql = 'select employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName from employee,department where employee.department_sn = department.sn and employee.department_sn=?'
+        let sql = 'SELECT employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName FROM employee,department WHERE employee.department_sn = department.sn and employee.department_sn=?'
         pool.query(sql, [department_sn,department_sn],function(err, result){
             if(err) throw err
             let resultData = {employees:null}
@@ -422,7 +422,7 @@ server.post('/department/update',function(request,response){
   */
  server.post('/employee/info',function(request,response){
      let sn = request.body.sn
-     let sql = 'select employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName from employee,department where employee.department_sn = department.sn and employee.sn=?'
+     let sql = 'SELECT employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName FROM employee,department WHERE employee.department_sn = department.sn and employee.sn=?'
      pool.query(sql, [sn], function(err, result){
          if(err) throw err
          response.json({employee:result[0]})
@@ -445,7 +445,7 @@ server.post('/department/update',function(request,response){
        response.json({code:402, msg:'请输入职务'})
        return
    }
-     let sql = 'update employee set name=?, department_sn=?, post=? where sn=?'
+     let sql = 'update employee set name=?, department_sn=?, post=? WHERE sn=?'
      pool.query(sql, [name,department_sn,post,sn], function(err,result){
          if(err) throw err
          response.json({code:200, msg:'修改成功'})
@@ -527,7 +527,7 @@ server.post('/department/update',function(request,response){
       let itemsFinish = 0
       let claimFinish = false
       let detailFinish = false
-      let sql1 = 'update claim_voucher set cause=?,total_amount=?,status=? where id=?'
+      let sql1 = 'update claim_voucher set cause=?,total_amount=?,status=? WHERE id=?'
       //修改报销单
       pool.query(sql1,[cause,total_amount,status,claim_voucher_id],function(err, result){
           if(err) throw err
@@ -537,7 +537,7 @@ server.post('/department/update',function(request,response){
           }
       })
       //修改报销单明细:先删除再插入
-      let sql2 = 'delete from claim_voucher_item where claim_voucher_id=?'
+      let sql2 = 'delete FROM claim_voucher_item WHERE claim_voucher_id=?'
       pool.query(sql2,[claim_voucher_id],function(err, result){
           if(err) throw err
           let sql3 = 'insert into claim_voucher_item values(null,?,?,?,?)'
@@ -580,7 +580,7 @@ server.post('/department/update',function(request,response){
     //提交给总经理审核
     if(total_amount >= 5000){
         let post = '总经理'
-        let sql1 = 'select sn from employee where post=?'
+        let sql1 = 'SELECT sn FROM employee WHERE post=?'
         pool.query(sql1, [post], function(err, result){
             if(err) throw err
             //更新报销单状态与待处理人
@@ -606,7 +606,7 @@ server.post('/department/update',function(request,response){
         })
     }else{
         let post = '部门经理'
-        let sql1 = 'select sn from employee where department_sn=? and post=?'
+        let sql1 = 'SELECT sn FROM employee WHERE department_sn=? and post=?'
         pool.query(sql1, [department_sn,post], function(err, result){
             if(err) throw err
             //更新报销单状态与待处理人
@@ -642,13 +642,13 @@ server.post('/department/update',function(request,response){
     let comment = request.body.comment
     let status = '已通过'
     let post = '财务'
-    let sql1 = 'select sn from employee where post=?'
+    let sql1 = 'SELECT sn FROM employee WHERE post=?'
     let claimFinish = false
     let recordFinish = false
     pool.query(sql1, [post], function(err, result){
         if(err) throw err
         //修改报销单状态
-        let sql2 = 'update claim_voucher set next_deal_sn=?,status=? where id=?'
+        let sql2 = 'update claim_voucher set next_deal_sn=?,status=? WHERE id=?'
         pool.query(sql2, [result[0].sn,status,claim_voucher_id], function(err, result){
             if(err) throw err
             claimFinish = true
@@ -678,13 +678,13 @@ server.post('/department/update',function(request,response){
     let claim_voucher_id = request.body.id
     let comment = request.body.comment
     let status = '已打回'
-    let sql1 = 'select create_sn from claim_voucher where id=?'
+    let sql1 = 'SELECT create_sn FROM claim_voucher WHERE id=?'
     let claimFinish = false
     let recordFinish = false
     pool.query(sql1, [claim_voucher_id], function(err, result){
         if(err) throw err
         //修改报销单状态
-        let sql2 = 'update claim_voucher set next_deal_sn=?,status=? where id=?'
+        let sql2 = 'update claim_voucher set next_deal_sn=?,status=? WHERE id=?'
         pool.query(sql2, [result[0].create_sn,status,claim_voucher_id], function(err, result){
             if(err) throw err
             claimFinish = true
@@ -718,7 +718,7 @@ server.post('/department/update',function(request,response){
     let claimFinish = false
     let recordFinish = false
     //修改报销单状态
-    let sql2 = 'update claim_voucher set next_deal_sn=?,status=? where id=?'
+    let sql2 = 'update claim_voucher set next_deal_sn=?,status=? WHERE id=?'
     pool.query(sql2, [next_deal_sn,status,claim_voucher_id], function(err, result){
         if(err) throw err
         claimFinish = true
@@ -751,7 +751,7 @@ server.post('/department/update',function(request,response){
     let claimFinish = false
     let recordFinish = false
     //修改报销单状态
-    let sql2 = 'update claim_voucher set next_deal_sn=?,status=? where id=?'
+    let sql2 = 'update claim_voucher set next_deal_sn=?,status=? WHERE id=?'
     pool.query(sql2, [next_deal_sn,status,claim_voucher_id], function(err, result){
         if(err) throw err
         claimFinish = true
@@ -776,12 +776,12 @@ server.post('/department/update',function(request,response){
    * 3.8查看待处理报销单
    */
   server.get('/expense/todo', function(request, response){
-      let sn = request.session.sn
+    let sn = request.session.sn
     let resultData = {arr:null}
-    let sql = 'select id, cause, create_time, total_amount, status from claim_voucher where next_deal_sn=?'
+    let sql = 'SELECT id, cause, create_time, total_amount, status, name FROM claim_voucher,employee WHERE next_deal_sn=? AND next_deal_sn=sn'
     pool.query(sql,[sn],function(err, result){
         if(err) throw err
-        resultData.arr = resultData
+        resultData.arr = result
         response.json(resultData)
     })
   })
@@ -790,12 +790,12 @@ server.post('/department/update',function(request,response){
  * 3.9查看个人报销单
  */
   server.get('/expense/history', function(request, response){
-      let sn = request.session.sn
+    let sn = request.session.sn
     let resultData = {arr:null}
-    let sql = 'select id, cause, create_time, total_amount, status from claim_voucher where create_sn=?'
+    let sql = 'SELECT id, cause, create_time, total_amount, status FROM claim_voucher WHERE create_sn=?'
     pool.query(sql,[sn],function(err, result){
         if(err) throw err
-        resultData.arr = resultData
+        resultData.arr = result
         response.json(resultData)
     })
   })
@@ -810,7 +810,7 @@ server.post('/department/update',function(request,response){
       let detailFinish = false
       let recordFinish = false
       //获取基本信息
-      let sql1 = 'select * from claim_voucher where id = ?'
+      let sql1 = 'SELECT * FROM claim_voucher WHERE id = ?'
       pool.query(sql1, [claim_voucher_id], function(err, result){
           if(err) throw err
           resultData.info = result[0]
@@ -821,7 +821,7 @@ server.post('/department/update',function(request,response){
       })
 
       //获取费用明细
-      let sql2 = 'select item, amount, comment from claim_voucher_item where claim_voucher_id=?'
+      let sql2 = 'SELECT item, amount, comment FROM claim_voucher_item WHERE claim_voucher_id=?'
       pool.query(sql2, [claim_voucher_id], function(err, result){
           if(err) throw err
           resultData.detail = result
@@ -832,7 +832,7 @@ server.post('/department/update',function(request,response){
       })
 
       //获取处理记录
-      let sql3 = 'select deal_sn, deal_time, deal_way, deal_result, comment from deal_record where claim_voucher_id=?'
+      let sql3 = 'SELECT deal_sn, deal_time, deal_way, deal_result, comment FROM deal_record WHERE claim_voucher_id=?'
       pool.query(sql3, [claim_voucher_id], function(err, result){
           if(err) throw err
           resultData.record = result

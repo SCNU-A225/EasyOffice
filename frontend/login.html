@@ -68,29 +68,37 @@
         let paswd = $('#password').val();
 
         $.ajax({
-        method:'POST',
-        url:'http://127.0.0.1:5050/user/login',
-        xhrFields:{withCredentials:true},
-        data:`sn=${userId}&password=${paswd}`,
-        success:function(data,msg,xhr){
-          if(data.code==200){
-                sessionStorage.setItem('sn',data.sn)
-                sessionStorage.setItem('name',data.name)
-                sessionStorage.setItem('department',data.department)
-                sessionStorage.setItem('post',data.post)
-                location.href="self.html"
-          }else{
-                $('#serverError').html(data.msg)
-                $('#modelLoginrError').modal()
-          }
-        },
-        error:function(xhr,err){
-          console.log('异步请求失败'),
-          console.log(xhr)
-          console.log(err)
-        }
-      })
+            method:'POST',
+            url:'http://127.0.0.1:5050/user/login',
+            xhrFields:{withCredentials:true},
+            data:`sn=${userId}&password=${paswd}`,
+            success:function(data,msg,xhr){
+                if(data.code==200){
+                    sessionStorage.setItem('sn',data.sn)
+                    sessionStorage.setItem('name',data.name)
+                    sessionStorage.setItem('department',data.department)
+                    sessionStorage.setItem('post',data.post)
+                    location.href="self.html"
+                }else{
+                    $('#serverError').html(data.msg)
+                    $('#modelLoginrError').modal()
+                }
+            },
+            error:function(xhr,err){
+                console.log('异步请求失败')
+                console.log(xhr)
+                console.log(err)
+            }
+        })
     })
+
+    //回车登录
+    document.onkeydown = function (event) {
+        var e = event || window.event;
+        if (e && e.keyCode == 13) { //回车键的键值为13
+            $("#loginBtn").click(); //调用登录按钮的登录事件
+        }
+    };
 </script>
 <div id="modelLoginrError" class="modal fade"><!--半透明遮罩-->
     <div class="modal-dialog modal-sm"><!--对话框的尺寸，位置-->
