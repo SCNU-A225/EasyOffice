@@ -180,7 +180,7 @@
                                 <div class="panel-body pn">
                                     <table id="message-table" class="table admin-form theme-warning tc-checkbox-1">
                                         <thead>
-                                        <tr class="">
+                                        <tr>
                                             <th class="text-center hidden-xs">Select</th>
                                             <th>事由</th>
                                             <th class="hidden-xs">状态</th>
@@ -216,42 +216,42 @@
     <script src="js/nav-base.js"></script>
     <script>
     $(window).ready(() => {
-            $.ajax({
-                method:'GET',
-                url:'http://127.0.0.1:5050/expense/history',
-                xhrFields:{withCredentials:true},
-                success:function(data,msg,xhr){
-                    let html = ``
-                    for(let each of data.arr){
-                        let time = each.create_time.split("T")[0]
-                        html += `
-                        <tr class="message-unread">
-                            <td class="hidden-xs">
-                                <label class="option block mn">
-                                    <input type="checkbox" name="mobileos" value="FR">
-                                    <span class="checkbox mn"></span>
-                                </label>
-                            </td>
-                            <td>${each.cause}</td>
-                            <td class="hidden-xs">
-                                <span class="badge badge-warning mr10 fs11">${each.status}</span>
-                            </td>
-                            <td>${sessionStorage.getItem("name")}</td>
-                            <td>${each.total_amount}</td>
-                            <td class="text-center hidden-xs">${time}</td>
-                            <td><a href="claim_voucher_detail.html?id=${each.id}">详细信息</a></td>
-                        </tr>
-                        `
-                    }
-                    $('#expenseList').html(html)
-                },
-                error:function(xhr,err){
-                    alert('异步请求失败')
-                    console.log(xhr)
-                    console.log(err)
+        $.ajax({
+            method:'GET',
+            url:'http://127.0.0.1:5050/expense/history',
+            xhrFields:{withCredentials:true},
+            success:function(data,msg,xhr){
+                let html = ``
+                for(let each of data.arr){
+                    let time = each.create_time.split("T")[0]
+                    html += `
+                    <tr class="message-unread">
+                        <td class="hidden-xs">
+                            <label class="option block mn">
+                                <input type="checkbox" name="mobileos" value="FR">
+                                <span class="checkbox mn"></span>
+                            </label>
+                        </td>
+                        <td>${each.cause}</td>
+                        <td class="hidden-xs">
+                            <span class="badge badge-warning mr10 fs11">${each.status}</span>
+                        </td>
+                        <td>${sessionStorage.getItem("name")}</td>
+                        <td>${each.total_amount}</td>
+                        <td class="text-center hidden-xs">${time}</td>
+                        <td><a href="claim_voucher_detail.html?id=${each.id}">详细信息</a></td>
+                    </tr>
+                    `
                 }
-            })
+                $('#expenseList').html(html)
+            },
+            error:function(xhr,err){
+                alert('异步请求失败')
+                console.log(xhr)
+                console.log(err)
+            }
         })
+    })
     </script>
 
     <div id="modelMsg" class="modal fade">

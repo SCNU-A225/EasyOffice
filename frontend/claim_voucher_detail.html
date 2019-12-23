@@ -151,60 +151,7 @@
                 </div>
                 <div class="admin-form theme-primary mw1000 center-block" style="padding-bottom: 175px;">
                     <div class="panel heading-border">
-                        <div class="panel-body bg-light">
-                            <div class="section-divider mt20 mb40">
-                                <span> 基本信息 </span>
-                            </div>
-                            <div class="section row">
-                                <div class="col-md-2">事由</div>
-                                <div class="col-md-6">${claimVoucher.cause}</div>
-                            </div>
-                            <div class="section row">
-                                <div class="col-md-2">创建人</div>
-                                <div class="col-md-4">${claimVoucher.creater.name}</div>
-                                <div class="col-md-2">创建时间</div>
-                                <div class="col-md-4">
-                                    <spring:eval expression="claimVoucher.createTime" />
-                                </div>
-                            </div>
-                            <div class="section row">
-                                <div class="col-md-2">待处理人</div>
-                                <div class="col-md-4">${claimVoucher.dealer.name}</div>
-                                <div class="col-md-2">状态</div>
-                                <div class="col-md-4">${claimVoucher.status}</div>
-                            </div>
-                            <div class="section-divider mt20 mb40">
-                                <span> 费用明细 </span>
-                            </div>
-                            <div class="section row">
-                                <C:forEach items="${items}" var="item">
-                                    <div class="col-md-3">${item.item}</div>
-                                    <div class="col-md-3">${item.amount}</div>
-                                    <div class="col-md-5">${item.comment}</div>
-                                </C:forEach>
-                            </div>
-                            <div class="section row">
-                                <div class="col-md-2">总金额</div>
-                                <div class="col-md-6">${claimVoucher.totalAmount}</div>
-                            </div>
-                            <div class="section-divider mt20 mb40">
-                                <span> 处理流程 </span>
-                            </div>
-                            <div class="section row">
-                                <c:forEach items="${records}" var="record">
-                                    <div class="col-md-1">${record.dealer.name}</div>
-                                    <div class="col-md-3">
-                                        <spring:eval expression="record.dealTime" />
-                                    </div>
-                                    <div class="col-md-1">${record.dealWay}</div>
-                                    <div class="col-md-2">${record.dealWay}</div>
-                                    <div class="col-md-5">备注：${record.comment}</div>
-                                </c:forEach>
-                            </div>
-                            <div class="panel-footer text-right">
-                                <button type="button" class="button" onclick="javascript:window.history.go(-1);"> 返回
-                                </button>
-                            </div>
+                        <div class="panel-body bg-light" id="info">
                         </div>
                     </div>
                 </div>
@@ -223,6 +170,97 @@
     <script type="text/javascript" src="js/pages.js"></script>
     <script src="js/base.js"></script>
     <script src="js/nav-base.js"></script>
+
+    <script>
+    $(window).ready(() => {
+        let id = getQueryVariable("id")
+        $.ajax({
+            method:'POST',
+            url:'http://127.0.0.1:5050/expense/detail',
+            data:`id=${id}`,
+            xhrFields:{withCredentials:true},
+            success:function(data,msg,xhr){
+                let cteate_time = new Date(data.info.create_time).Format("yyyy-MM-dd hh:mm:ss")
+                let html = `
+                            <div class="section-divider mt30 mb20">
+                                <span> 基本信息 </span>
+                            </div>
+                            <div class="section row">
+                                <div class="col-md-2"><b>事由</b></div>
+                                <div class="col-md-6">${data.info.cause}</div>
+                            </div>
+                            <div class="section row">
+                                <div class="col-md-2"><b>创建人</b></div>
+                                <div class="col-md-4">${data.info.create_sn}</div>
+                                <div class="col-md-2"><b>创建时间</b></div>
+                                <div class="col-md-4">${cteate_time}</div>
+                            </div>
+                            <div class="section row">
+                                <div class="col-md-2"><b>待处理人</b></div>
+                                <div class="col-md-4">${data.info.next_deal_sn}</div>
+                                <div class="col-md-2"><b>状态</b></div>
+                                <div class="col-md-4">${data.info.status}</div>
+                            </div>
+                            <div class="section-divider mt40 mb20">
+                                <span> 费用明细 </span>
+                            </div>
+                            <table class="table">
+                                <tr>
+                                    <th>类型</th>
+                                    <th>金额</th>
+                                    <th>备注</th>
+                                </tr>`
+                for(let each of data.detail){
+                    html += `<tr>
+                                <td>${each.item}</td>
+                                <td>${each.amount}</td>
+                                <td>${each.comment}</td>
+                            </tr>`
+                }
+                html +=     `<tr>
+                                <td><b>总金额: ${data.info.total_amount}</b></td>
+                            </tr>
+                                </tbody>
+                            </table>
+                            <div class="section-divider mt30 mb20">
+                                <span> 处理流程 </span>
+                            </div>
+                            <table class="table mb30">
+                                <tr>
+                                    <th>处理人</th>
+                                    <th>处理时间</th>
+                                    <th>处理类型</th>
+                                    <th>处理结果</th>
+                                    <th>备注</th>
+                                </tr>
+                            `
+                for(let each of data.record){
+                    let deal_time = new Date(each.deal_time).Format("yyyy-MM-dd hh:mm:ss")
+                    html += `<tr>
+                                <td>${each.deal_sn}</td>
+                                <td>${deal_time}</td>
+                                <td>${each.deal_way}</td>
+                                <td>${each.deal_result}</td>
+                                <td>${each.comment}</td>
+                            </tr>`
+                }
+                html +=     `   </tbody>
+                            </table>
+                            <div class="panel-footer text-right">
+                                <button type="button" class="button btn-primary" onclick="javascript:window.history.go(-1);"> 返回
+                                </button>
+                            </div>`
+                $('#info').html(html)
+            },
+            error:function(xhr,err){
+                alert('异步请求失败')
+                console.log(xhr)
+                console.log(err)
+            }
+        })
+    })
+    </script>
+
 
     <div id="modelMsg" class="modal fade">
         <div class="modal-dialog modal-sm">
