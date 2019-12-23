@@ -462,15 +462,13 @@ server.post('/department/update',function(request,response){
   * 3.1创建并保存报销单
   */
   server.post('/expense/create',function(request, response){
-      console.log(request.body)
-      let formData = JSON.parse(request.body.formData)
+    let formData = JSON.parse(request.body.formData)
     let cause = formData.cause
     let create_sn = request.session.sn
     let next_deal_sn = create_sn
     let total_amount = formData.total_amount  
     let status = '已创建'
     let items = formData.items
-    console.log(cause+" "+items+" "+total_amount)
     if(items == null || items == ''){
         response.json({code:401, msg:'报销单明细不能为空'})
         return
@@ -500,7 +498,6 @@ server.post('/department/update',function(request,response){
         })
         let sql3 = 'insert into claim_voucher_item values(null,?,?,?,?)'
         for(let i = 0; i < itemsLength; i++){
-            console.log(items[i][0]+" "+items[i][1]+" "+items[i][2])
             pool.query(sql3,[claim_voucher_id,items[i][0],items[i][1],items[i][2]],function(err,result){
                 if(err) throw err
                 itemsFinish = itemsFinish + 1
