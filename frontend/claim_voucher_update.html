@@ -143,92 +143,60 @@
                 </div>
             </div>
         </aside>
-        <section id="content" class="table-layout animated fadeIn">
-            <div class="tray tray-center">
-                <div class="content-header">
-                    <h2> 修改报销单 </h2>
-                    <p class="lead"></p>
-                </div>
-                <div class="admin-form theme-primary mw1000 center-block" style="padding-bottom: 175px;">
-                    <div class="panel heading-border">
-                        <form:form id="admin-form" name="addForm" action="/claim_voucher/update" modelAttribute="info">
-                            <form:hidden path="claimVoucher.id" />
-                            <div class="panel-body bg-light">
-                                <div class="section-divider mt20 mb40">
-                                    <span> 基本信息 </span>
-                                </div>
-                                <div class="section">
-                                    <label for="claimVoucher.cause" class="field prepend-icon">
-                                        <input path="claimVoucher.cause" class="gui-input" placeholder="事由..." />
-                                        <label for="claimVoucher.cause" class="field-icon">
-                                            <i class="fa fa-lock"></i>
-                                        </label>
-                                    </label>
-                                </div>
-                                <div class="section-divider mt20 mb40">
-                                    <span> 费用明细 </span>
-                                </div>
-                                <div class="section row" id="items">
-                                    <c:forEach items="${info.items}" varStatus="sta">
-                                        <div>
-                                            <div class="col-md-3">
-                                                <label for="items[${sta.index}].item" class="field prepend-icon">
-                                                    <form:hidden path="items[${sta.index}].id" />
-                                                    <form:hidden path="items[${sta.index}].claimVoucherId" />
-                                                    <form:select path="items[${sta.index}].item" cssClass="gui-input"
-                                                        placeholder="花销类型..." items="${items}" />
-                                                </label>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label for="items[${sta.index}].amount" class="field prepend-icon">
-                                                    <form:input path="items[${sta.index}].amount"
-                                                        cssClass="gui-input money" placeholder="金额..." />
-                                                    <label for="items[${sta.index}].amount" class="field-icon">
-                                                        <i class="fa fa-lock"></i>
-                                                    </label>
-                                                </label>
-                                            </div>
-                                            <div class="col-md-5">
-                                                <label for="items[${sta.index}].comment" class="field prepend-icon">
-                                                    <form:input path="items[${sta.index}].comment" cssClass="gui-input"
-                                                        placeholder="备注..." />
-                                                    <label for="items[${sta.index}].comment" class="field-icon">
-                                                        <i class="fa fa-lock"></i>
-                                                    </label>
-                                                </label>
-                                            </div>
-                                            <div class="col-md-1" style="text-align:right;">
-                                                <button type="button" class="button"> X </button>
-                                            </div>
-                                        </div>
-                                    </c:forEach>
-                                </div>
-                                <div class="section row">
-                                    <div class="col-md-3">
-                                        <label for="totalMoney" class="field prepend-icon">
-                                            <form:input id="totalMoney" path="claimVoucher.totalAmount"
-                                                cssClass="gui-input" placeholder="总金额..." readonly="true" />
-                                            <label for="totalMoney" class="field-icon">
-                                                <i class="fa fa-user"></i>
+        <section id="content_wrapper">
+            <section id="content" class="table-layout animated fadeIn">
+                <div class="tray tray-center">
+                    <div class="content-header">
+                        <h2> 修改报销单 </h2>
+                        <p class="lead"></p>
+                    </div>
+                    <div class="admin-form theme-primary mw1000 center-block" style="padding-bottom: 175px;">
+                        <div class="panel heading-border">
+                            <form id="admin-form" name="addForm" action="#">
+                                <div class="panel-body bg-light">
+                                    <div class="section-divider mt20 mb40">
+                                        <span> 基本信息 </span>
+                                    </div>
+                                    <div class="section">
+                                        <label for="claimVoucher.cause" class="field prepend-icon">
+                                            <input path="claimVoucher.cause" class="gui-input" placeholder="事由..." id="cause"/>
+                                            <label for="claimVoucher.cause" class="field-icon">
+                                                <i class="fa fa-lock"></i>
                                             </label>
                                         </label>
                                     </div>
-                                    <div class="section" style="text-align:right;">
-                                        <div class="col-md-9">
-                                            <button type="button" class="button" id="addItemButton"> + </button>
+                                    <div class="section-divider mt20 mb40">
+                                        <span> 费用明细 </span>
+                                    </div>
+                                    <div class="section row" id="items">
+                                        
+                                    </div>
+                                    <div class="section row">
+                                        <div class="col-md-3">
+                                            <label for="totalMoney" class="field prepend-icon">
+                                                <input type="text" id="totalMoney" class="gui-input" placeholder="总金额..." readonly="true" >
+                                                <label for="totalMoney" class="field-icon">
+                                                    <i class="fa fa-user"></i>
+                                                </label>
+                                            </label>
+                                        </div>
+                                        <div class="section" style="text-align:right;">
+                                            <div class="col-md-9">
+                                                <button type="button" class="button" id="addItemButton"> + </button>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="panel-footer text-right">
+                                        <button type="submit" class="button" id="save"> 保存 </button>
+                                        <button type="button" class="button" onclick="javascript:window.history.go(-1);"> 返回
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="panel-footer text-right">
-                                    <button type="submit" class="button"> 保存 </button>
-                                    <button type="button" class="button" onclick="javascript:window.history.go(-1);"> 返回
-                                    </button>
-                                </div>
-                            </div>
-                        </form:form>
+                            </form:form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </section>
     </div>
 
@@ -242,20 +210,218 @@
     <script src="js/main.js"></script>
     <script type="text/javascript" src="js/pages.js"></script>
     <script src="js/base.js"></script>
-    <script src="js/nav-base.js"></script>
+    <!-- <script src="js/nav-base.js"></script> -->
 
-    <div id="modelMsg" class="modal fade">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
+    <script>
+        $(document).ready(function (){
+            if(!sessionStorage.getItem('sn')){
+                alert("请先登录")
+                location.href = 'login.html'
+            }
+            if(sessionStorage.post != '总经理'){
+                $('#departmentManagement').addClass("hidden")
+                if(sessionStorage.post != '部门经理'){
+                    $('#employeeManagement').addClass("hidden")
+                    $('#infoManagmentLabel').addClass("hidden")
+                }
+            }
+            $('#rname').html(sessionStorage.getItem("name"))
+            $('#lname').html(sessionStorage.getItem("name"))
+            $('#post1').html(sessionStorage.getItem("post"))
+            var id = getQueryVariable("id")
+            $.ajax({
+                method:'POST',
+                url:'http://127.0.0.1:5050/expense/detail',
+                xhrFields:{withCredentials:true},
+                data:`id=${id}`,
+                success:function(data,msg,xhr){
+                    let cause = data.info.cause
+                    let total_amount = data.info.total_amount
+                    let itemslen = data.detail.length
+                    let htm = ''
+                    $('#cause').val(cause)
+                    $("#totalMoney").val(total_amount)
+                    for(var i=0;i<itemslen;i++){
+                        htm +=  '<div>\
+                                    <div class="col-md-3">\
+                                        <label for="items['+i+'].item" class="field prepend-icon">\
+                                            <select name="setPo" id="item" class="gui-input">\
+                                                <option value="1" selected disabled style="display: none;">--花销类型--</option>\
+                                                <option value="餐饮">餐饮</option>\
+                                                <option value="住宿">住宿</option>\
+                                                <option value="交通">交通</option>\
+                                                <option value="办公">办公</option>\
+                                                <option value="会议">会议</option>\
+                                            </select>\
+                                        </label>\
+                                    </div>\
+                                    <div class="col-md-3">\
+                                        <label for="items['+i+'].amount" class="field prepend-icon">\
+                                            <input type="text" class="gui-input money" placeholder="金额...">\
+                                            <label for="items['+i+'].amount" class="field-icon">\
+                                                <i class="fa fa-lock"></i>\
+                                            </label>\
+                                        </label>\
+                                    </div>\
+                                    <div class="col-md-5">\
+                                        <label for="items['+i+'].comment" class="field prepend-icon">\
+                                            <input type="text" class="gui-input" placeholder="备注..." >\
+                                            <label for="items['+i+'].comment" class="field-icon">\
+                                                <i class="fa fa-lock"></i>\
+                                            </label>\
+                                        </label>\
+                                    </div>\
+                                    <div class="col-md-1" style="text-align:right;">\
+                                        <button type="button" class="button btn-primary"> X </button>\
+                                    </div>\
+                                </div>'
+                    }
+                    $("#items").html(htm)
+                    for(var i=0;i<itemslen;i++){
+                        $("#items").children("div").eq(i).children().eq(0).find("select").val(data.detail[i].item)
+                        $("#items").children("div").eq(i).children().eq(1).find("input").val(data.detail[i].amount)
+                        $("#items").children("div").eq(i).children().eq(2).find("input").val(data.detail[i].comment)
+                    }
+                    builderIndex();
+	                calculateMoney();
+                    setClick();
+                },
+                error:function(xhr,err){
+                    console.log('异步请求失败'),
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
+        })
+
+        $('#save').click(function (){
+            var id = getQueryVariable("id")
+            let len = $('#items').children().length
+            let cause = $('#cause').val()
+            if(cause==''){
+                $('#modelMsgTitle').html("创建失败")
+                $('#modelMsgBody').html("事由不能为空")
+                $('#modelMsg').modal()
+            }
+            else{
+                let nullJudge = false
+                let items = []
+                let total_amount = $('#totalMoney').val()
+                for(var i=0;i<len; i++){
+                    let item = $("#items").children("div").eq(i).children().eq(0).find("select").val()
+                    let amount = $("#items").children("div").eq(i).children().eq(1).find("input").val()
+                    let comment = $("#items").children("div").eq(i).children().eq(2).find("input").val()
+                    let temp = new Array()
+                    temp.push(item)
+                    temp.push(amount)
+                    temp.push(comment)
+                    items.push(temp)
+                    if(item==null || amount==''){
+                        nullJudge = true
+                        break
+                    }
+                }
+                if(nullJudge){
+                    $('#modelMsgTitle').html("创建失败")
+                    $('#modelMsgBody').html("明细类型或金额不能为空")
+                    $('#modelMsg').modal()
+                }
+                else{
+                    var formData = {
+                        "id":id,
+                        "cause":cause,
+                        "items":items,
+                        "total_amount":total_amount
+                    }
+                    $.ajax({
+                        method:'POST',
+                        url:'http://127.0.0.1:5050/expense/update',
+                        data:`formData=${JSON.stringify(formData)}`,
+                        xhrFields:{withCredentials:true},
+                        success:function(data,msg,xhr){
+                            if(data.code==200){
+                                //alert("保存成功")
+                                window.location.href = "claim_voucher_self.html"
+                            }
+                            else{
+                                $('#modelMsgTitle').html("保存失败")
+                                $('#modelMsgBody').html(data.msg)
+                                $('#modelMsg').modal()
+                            }
+                        },
+                        error:function(xhr,err){
+                            console.log('异步请求失败'),
+                            console.log(xhr)
+                            console.log(err)
+                        }
+                    })
+                }
+            }
+        })
+        function setClick(){
+            $("#addItemButton").click(
+                function(){
+                    $("#items").children("div").last().after($("#items").children("div").first().clone());
+                    $("#items").children("div").find("button").click(
+                        function(){
+                            $(this).parent().parent().remove();
+                            if($("#items").children("div").size()==1){
+                                $("#items").find("button").attr("disabled",true);
+                            }
+                            builderIndex();
+                            calculateMoney();
+                        }
+                    );
+                    $("#items").find("button").attr("disabled",false);
+                    builderIndex();	
+                    $(".money").change(
+                        function(){
+                            calculateMoney();
+                        }
+                    );
+                    calculateMoney();
+                }
+            );
+            $(".money").change(
+                function(){
+                    calculateMoney();
+                }
+            );
+        }
+
+        function builderIndex(){
+            $.each($("#items").children(),function(i,val){
+                $("#items").children("div").eq(i).children().eq(0).find("select").attr("name","items["+i+"].item");		
+                $("#items").children("div").eq(i).children().eq(1).find("input").attr("name","items["+i+"].amount");				
+                $("#items").children("div").eq(i).children().eq(2).find("input").attr("name","items["+i+"].comment");
+                        
+            });	
+        }
+
+        function calculateMoney(){
+            var totalMoney=0;
+            $.each($(".money"),function(i,val){
+                totalMoney+=parseFloat($(".money").eq(i).val());
+            });
+            $("#totalMoney").val(totalMoney)
+        }
+    </script>
+    <div id="modelMsg" class="modal fade"><!--半透明遮罩-->
+        <div class="modal-dialog modal-sm"><!--对话框的尺寸，位置-->
+            <div class="modal-content"><!--边框，倒角，背景色-->
+                <!--头部-->
                 <div class="modal-header">
                     <h4 class="modal-title" id="modelMsgTitle"></h4>
                 </div>
+                <!--主体-->
                 <div class="modal-body">
-                    <p><span id="modelMsgBody"></span></p>
+                    <p>
+                        <span id="modelMsgBody"></span>
+                    </p>
                 </div>
+                <!--尾部-->
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-info">确定</button>
-                </div>
             </div>
         </div>
     </div>

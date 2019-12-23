@@ -239,9 +239,9 @@
                             <td class="text-center hidden-xs">${time}</td>
                             <td>
                         `
-                        if(each.status=="已创建"||each.status=="已打回"){
+                        if(each.status=="已创建"||each.status=="已打回"||each.status=="已修改"){
                             html += `<a href="claim_voucher_update.html?id=${each.id}">修改</a> &nbsp 
-                                    <a href="#">提交</a> &nbsp`
+                                    <a href="#" onclick="commit(this)" name="${each.id}+${each.total_amount}">提交</a> &nbsp`
                         } else if(each.status=="已提交"){
                             html += `<a href="claim_voucher_check.html?id=${each.id}">审核</a> &nbsp`
                         } else if(each.status=="已通过"){
@@ -264,6 +264,33 @@
             })
         })
 
+        function commit(e){
+            let name = $(e).attr("name")
+            let id = name.split("+")[0]
+            let money = name.split("+")[1]
+            $.ajax({
+                method:'POST',
+                url:'http://127.0.0.1:5050/expense/submit',
+                xhrFields:{withCredentials:true},
+                data:`id=${id}&amount=${money}`,
+                success:function(data,msg,xhr){
+                    if(data.code==200){
+                        alert("提交成功")
+                        window.location.reload()
+                    }
+                    else{
+                        $('#modelMsgTitle').html("提交失败")
+                        $('#modelMsgBody').html("提交失败")
+                        $('#modelMsg').modal()
+                    }
+                },
+                error:function(xhr,err){
+                    console.log('异步请求失败'),
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
+        }
     </script>
     <div id="modelMsg" class="modal fade">
         <div class="modal-dialog modal-sm">

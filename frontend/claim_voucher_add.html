@@ -198,7 +198,7 @@
                                                     </label>
                                                 </div>
                                                 <div class="col-md-1" style="text-align:right;">
-                                                    <button type="button" class="button"> X </button>
+                                                    <button type="button" class="button btn-primary"> X </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -283,10 +283,6 @@
                         method:'POST',
                         url:'http://127.0.0.1:5050/expense/create',
                         data:`formData=${JSON.stringify(formData)}`,
-                        headers:{
-                            "Content-Type": "application/json;" //必须这样写
-                        },
-                        dataType:"json",
                         xhrFields:{withCredentials:true},
                         success:function(data,msg,xhr){
                             if(data.code==200){
@@ -308,6 +304,7 @@
                 }
             }
         })
+        
     </script>
     <!--弹框表示修改结果-->
     <div id="modelMsg" class="modal fade"><!--半透明遮罩-->

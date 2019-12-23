@@ -462,15 +462,13 @@ server.post('/department/update',function(request,response){
   * 3.1创建并保存报销单
   */
   server.post('/expense/create',function(request, response){
-      console.log(request.body)
-      let formData = JSON.parse(request.body.formData)
+    let formData = JSON.parse(request.body.formData)
     let cause = formData.cause
     let create_sn = request.session.sn
     let next_deal_sn = create_sn
     let total_amount = formData.total_amount  
     let status = '已创建'
     let items = formData.items
-    console.log(cause+" "+items+" "+total_amount)
     if(items == null || items == ''){
         response.json({code:401, msg:'报销单明细不能为空'})
         return
@@ -500,7 +498,6 @@ server.post('/department/update',function(request,response){
         })
         let sql3 = 'insert into claim_voucher_item values(null,?,?,?,?)'
         for(let i = 0; i < itemsLength; i++){
-            console.log(items[i][0]+" "+items[i][1]+" "+items[i][2])
             pool.query(sql3,[claim_voucher_id,items[i][0],items[i][1],items[i][2]],function(err,result){
                 if(err) throw err
                 itemsFinish = itemsFinish + 1
@@ -517,12 +514,13 @@ server.post('/department/update',function(request,response){
    * 3.2修改报销单
    */
   server.post('/expense/update', function(request,response){
+      let formData = JSON.parse(request.body.formData)
       let sn = request.session.sn
-      let claim_voucher_id = request.body.id
-      let cause = request.body.cause
-      let total_amount = request.body.total_amount
+      let claim_voucher_id = formData.id
+      let cause = formData.cause
+      let total_amount = formData.total_amount
       let status = '已修改'
-      let items = request.body.items
+      let items = formData.items
       let itemsLength = items.length
       let itemsFinish = 0
       let claimFinish = false
@@ -542,7 +540,7 @@ server.post('/department/update',function(request,response){
           if(err) throw err
           let sql3 = 'insert into claim_voucher_item values(null,?,?,?,?)'
           for(let i = 0; i < itemsLength; i++){
-              pool.query(sql3,[claim_voucher_id,items[i].item,items[i].amount,items[i].comment],function(err, result){
+              pool.query(sql3,[claim_voucher_id,items[i][0],items[i][1],items[i][2]],function(err, result){
                   if(err) throw err
                   itemsFinish =  itemsFinish + 1
                   if(claimFinish && detailFinish && itemsFinish == itemsLength){
@@ -584,8 +582,8 @@ server.post('/department/update',function(request,response){
         pool.query(sql1, [post], function(err, result){
             if(err) throw err
             //更新报销单状态与待处理人
-            let sql2 = 'update claim_voucher set next_deal_sn=?, status=?'
-            pool.query(sql2,[result[0].sn, status], function(err, result){
+            let sql2 = 'update claim_voucher set next_deal_sn=?, status=? where id = ?'
+            pool.query(sql2,[result[0].sn, status,claim_voucher_id], function(err, result){
                 submitFinish = true
                 if(recordFinish){
                     response.json({code:200, msg:'提交成功'})
@@ -610,8 +608,8 @@ server.post('/department/update',function(request,response){
         pool.query(sql1, [department_sn,post], function(err, result){
             if(err) throw err
             //更新报销单状态与待处理人
-            let sql2 = 'update claim_voucher set next_deal_sn=?, status=?'
-            pool.query(sql2,[result[0].sn, status], function(err, result){
+            let sql2 = 'update claim_voucher set next_deal_sn=?, status=?  where id = ?'
+            pool.query(sql2,[result[0].sn, status,claim_voucher_id], function(err, result){
                 submitFinish = true
                 if(recordFinish){
                     response.json({code:200, msg:'提交成功'})
@@ -778,7 +776,8 @@ server.post('/department/update',function(request,response){
   server.get('/expense/todo', function(request, response){
     let sn = request.session.sn
     let resultData = {arr:null}
-    let sql = 'SELECT id, cause, create_time, total_amount, status, name FROM claim_voucher,employee WHERE next_deal_sn=? AND next_deal_sn=sn'
+    let sql = 'SELECT c.id, c.cause, c.create_time, c.total_amount, c.status, e.name FROM claim_voucher c,\
+                employee e WHERE c.next_deal_sn=? AND c.create_sn=e.sn;'
     pool.query(sql,[sn],function(err, result){
         if(err) throw err
         resultData.arr = result
