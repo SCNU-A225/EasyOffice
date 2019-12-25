@@ -219,10 +219,10 @@
 
         function getEmployeeList(){
             $.ajax({
-                method:'GET',
+                method:'POST',
                 url:'http://127.0.0.1:5050/employee/all',
                 xhrFields:{withCredentials:true},
-                data:``,
+                data:`department=${sessionStorage.getItem("department")}&post=${sessionStorage.getItem("post")}`,
                 success:function(data,msg,xhr){
                     for(i in data.employees){
                         let row = '<tr class="message-unread">\

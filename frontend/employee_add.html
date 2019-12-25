@@ -179,10 +179,10 @@
                                             <div class="col-md-6">
                                                 <label for="sn" class="field select">
                                                     <select name="setDe" id="setDepartment" class="gui-input">
-                                                        <option value="1" selected disabled style="display: none;">--所属部门--</option>
+                                                        <!-- <option value="1" selected disabled style="display: none;">--所属部门--</option>
                                                         <option value="10002">财务部</option>
                                                         <option value="10003">事业部</option>
-                                                        <option value="10001">总经理办公室</option>
+                                                        <option value="10001">总经理办公室</option> -->
                                                     </select>
                                                     <i class="arrow double"></i>
                                                 </label>
@@ -226,7 +226,29 @@
     <script src="js/nav-base.js"></script>
 
     <script>
+        $(window).ready(function (){
+            $.ajax({
+                method:'GET',
+                url:'http://127.0.0.1:5050/department/all',
+                xhrFields:{withCredentials:true},
+                data:``,
+                success:function(data,msg,xhr){
+                    let html = ''
+                    html += '<option value="1" selected disabled style="display: none;">--所属部门--</option>'
+                    for(i in data.departmentList){
+                        html += '<option value="'+ data.departmentList[i].sn +'">'+data.departmentList[i].name+'</option>'
+                    }
+                    $('#setDepartment').html(html)
+                },
+                error:function(xhr,err){
+                    console.log('异步请求失败'),
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
+        })
         $('#addEmployeeForm').click(function (){
+            
             let sn = $('#formSn').val()
             let name = $('#formName').val()
             let department_sn = $('#setDepartment').val()

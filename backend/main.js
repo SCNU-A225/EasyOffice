@@ -10,7 +10,7 @@ let pool = mysql.createPool({
     host : '127.0.0.1',
     port : '3306',
     user : 'root',
-    password : '123456',
+    password : '',
     database : 'easyoffice',
     connectionLimit : '10'    //连接池大小限制
 })
@@ -395,7 +395,7 @@ server.post('/department/update',function(request,response){
  /**
   * 2.4查找所有员工
   */
- server.get('/employee/all',function(request, response){
+ server.post('/employee/all',function(request, response){
     let post = request.session.post
     if(post == '总经理'){
         let sql = 'SELECT employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName FROM employee,department WHERE employee.department_sn = department.sn'
@@ -406,9 +406,9 @@ server.post('/department/update',function(request,response){
             response.json(resultData)
         })
     }else{
-        let department_sn = request.body.department_sn
-        let sql = 'SELECT employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName FROM employee,department WHERE employee.department_sn = department.sn and employee.department_sn=?'
-        pool.query(sql, [department_sn,department_sn],function(err, result){
+        let department = request.body.department
+        let sql = 'SELECT employee.sn, employee.name, employee.department_sn, employee.post, department.name as departmentName FROM employee,department WHERE employee.department_sn = department.sn and department.name=?'
+        pool.query(sql, [department],function(err, result){
             if(err) throw err
             let resultData = {employees:null}
             resultData.employees = result
