@@ -1,4 +1,8 @@
-//Node中无需指定package
+let MODE = 'PRODUCTION'
+if(process.argv.splice(2)[0]=='DEBUG'){
+    MODE = 'DEBUG'
+    console.log("正在使用本地测试环境！")
+}
 
 //导入其他的包
 let mysql =  require('mysql')
@@ -6,16 +10,27 @@ let mysql =  require('mysql')
 //使用第三方包提供的函数和对象
 //创建数据库连接池
 //创建数据库连接 少一个connectionLimit
-let pool = mysql.createPool({
-    //host : '172.19.9.23',
-    host : 'localhost',
-    port : '3306',
-    user : 'root',
-    //password : 'root',
-    password : '',
-    database : 'easyoffice',
-    connectionLimit : '50'    //连接池大小限制
-})
+let pool
+if(MODE=='PRODUCTION'){
+    pool = mysql.createPool({
+        host : '172.19.9.23',
+        port : '3306',
+        user : 'root',
+        password : 'root',
+        database : 'easyoffice',
+        connectionLimit : '50'    //连接池大小限制
+    })
+} else {
+    pool = mysql.createPool({
+        host : 'localhost',
+        port : '3306',
+        user : 'root',
+        password : '123456',
+        database : 'easyoffice',
+        connectionLimit : '10'    //连接池大小限制
+    })
+}
+
 
 //导入第三方模块：express，创建基于NOde.js的web服务器
 let express = require('express')
@@ -67,9 +82,8 @@ server.use(express.urlencoded({
 server.use(express.json())
 //自定义中间件，跨域访问
 server.use(function(request,response,next){
-    // response.set('Access-Control-Allow-Origin','*')
-    //response.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");//前端域名
-    response.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");//前端域名
+    if(MODE=='PRODUCTION')  response.header("Access-Control-Allow-Origin", "http://47.100.10.67");//前端域名
+    else response.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");//前端域名
     response.header("Access-Control-Allow-Credentials",'true');
     response.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     response.setHeader("Access-Control-Allow-Headers", "Content-Type");
