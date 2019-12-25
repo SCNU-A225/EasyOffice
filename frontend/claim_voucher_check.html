@@ -180,7 +180,7 @@
         $(window).ready(() => {
             $.ajax({
                 method: 'POST',
-                url: 'http://127.0.0.1:5050/expense/detail',
+                url: `${serverUrl}/expense/detail`,
                 data: `id=${id}`,
                 xhrFields: { withCredentials: true },
                 success: function (data, msg, xhr) {
@@ -283,7 +283,7 @@
                         let comment = $("#comment").val()
                         $.ajax({
                             method: 'POST',
-                            url: 'http://127.0.0.1:5050/expense/agree',
+                            url: `${serverUrl}/expense/agree`,
                             data: `id=${id}&comment=${comment}`,
                             xhrFields: { withCredentials: true },
                             success: function (data, msg, xhr) {
@@ -301,7 +301,7 @@
                         let comment = $("#comment").val()
                         $.ajax({
                             method: 'POST',
-                            url: 'http://127.0.0.1:5050/expense/return',
+                            url: `${serverUrl}/expense/return`,
                             data: `id=${id}&comment=${comment}`,
                             xhrFields: { withCredentials: true },
                             success: function (data, msg, xhr) {
@@ -319,7 +319,7 @@
                         let comment = $("#comment").val()
                         $.ajax({
                             method: 'POST',
-                            url: 'http://127.0.0.1:5050/expense/refuse',
+                            url: `${serverUrl}/expense/refuse`,
                             data: `id=${id}&comment=${comment}`,
                             xhrFields: { withCredentials: true },
                             success: function (data, msg, xhr) {
@@ -337,7 +337,7 @@
                         let comment = $("#comment").val()
                         $.ajax({
                             method: 'POST',
-                            url: 'http://127.0.0.1:5050/expense/pay',
+                            url: `${serverUrl}/expense/pay`,
                             data: `id=${id}&comment=${comment}`,
                             xhrFields: { withCredentials: true },
                             success: function (data, msg, xhr) {

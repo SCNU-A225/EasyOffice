@@ -216,7 +216,7 @@
             var id = getQueryVariable("id")
             $.ajax({
                 method:'POST',
-                url:'http://127.0.0.1:5050/expense/detail',
+                url:`${serverUrl}/expense/detail`,
                 xhrFields:{withCredentials:true},
                 data:`id=${id}`,
                 success:function(data,msg,xhr){
@@ -318,7 +318,7 @@
                     }
                     $.ajax({
                         method:'POST',
-                        url:'http://127.0.0.1:5050/expense/update',
+                        url:`${serverUrl}/expense/update`,
                         data:`formData=${JSON.stringify(formData)}`,
                         xhrFields:{withCredentials:true},
                         success:function(data,msg,xhr){

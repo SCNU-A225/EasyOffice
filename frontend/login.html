@@ -61,6 +61,7 @@
 <script src="js/jquery-1.11.1.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/utility.js"></script>
+<script src="js/base.js"></script>
 <script>
     //登录按钮事件监听
     $('#loginBtn').click(function(){
@@ -69,7 +70,7 @@
 
         $.ajax({
             method:'POST',
-            url:'http://127.0.0.1:5050/user/login',
+            url:`${serverUrl}/user/login`,
             xhrFields:{withCredentials:true},
             data:`sn=${userId}&password=${paswd}`,
             success:function(data,msg,xhr){

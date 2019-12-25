@@ -23,7 +23,7 @@ function quit(){
     sessionStorage.removeItem("post")
     $.ajax({
         method:'GET',
-        url:'http://127.0.0.1:5050/logout',
+        url:`${serverUrl}/logout`,
         xhrFields:{withCredentials:true},
         data:``,
         success:function(data,msg,xhr){

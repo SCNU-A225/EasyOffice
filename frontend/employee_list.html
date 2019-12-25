@@ -156,13 +156,13 @@
                                         <div class="hidden-xs hidden-sm col-md-3">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default light">
-                                                    <i class="fa fa-refresh"></i>
+                                                    <i class="fa fa-refresh" onclick="window.location.reload()"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-default light">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-default light">
-                                                    <i class="fa fa-plus" onclick="javascript:window.location.href='./employee_add.html'"></i>
+                                                    <i class="fa fa-plus" onclick="window.location.href='employee_add.html'"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -220,7 +220,7 @@
         function getEmployeeList(){
             $.ajax({
                 method:'GET',
-                url:'http://127.0.0.1:5050/employee/all',
+                url:`${serverUrl}/employee/all`,
                 xhrFields:{withCredentials:true},
                 data:``,
                 success:function(data,msg,xhr){
@@ -259,7 +259,7 @@
             let name = $(e).attr("name")
             $.ajax({
                 method:'POST',
-                url:'http://127.0.0.1:5050/employee/delete',
+                url:`${serverUrl}/employee/delete`,
                 xhrFields:{withCredentials:true},
                 data:`sn=${name}`,
                 success:function(data,msg,xhr){

@@ -281,7 +281,7 @@
                     }
                     $.ajax({
                         method:'POST',
-                        url:'http://127.0.0.1:5050/expense/create',
+                        url:`${serverUrl}/expense/create`,
                         data:`formData=${JSON.stringify(formData)}`,
                         xhrFields:{withCredentials:true},
                         success:function(data,msg,xhr){

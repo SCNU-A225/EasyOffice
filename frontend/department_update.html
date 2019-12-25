@@ -159,7 +159,7 @@
                                         <div class="section row">
                                             <div class="col-md-6">
                                                 <label for="sn" class="field prepend-icon">
-                                                    <input type="text" class="gui-input " placeholder="编号..." readonly="true" id="formDeSn">
+                                                    <input type="text" class="gui-input " placeholder="部门编号..." readonly="true" id="formDeSn">
                                                     <label for="sn" class="field-icon">
                                                         <i class="fa fa-user"></i>
                                                     </label>
@@ -212,7 +212,7 @@
             var id = getQueryVariable("sn")
             $.ajax({
                 method:'POST',
-                url:'http://127.0.0.1:5050/department/info',
+                url:`${serverUrl}/department/info`,
                 xhrFields:{withCredentials:true},
                 data:`sn=${id}`,
                 success:function(data,msg,xhr){
@@ -240,7 +240,7 @@
             else{
                 $.ajax({
                     method:'POST',
-                    url:'http://127.0.0.1:5050/department/update',
+                    url:`${serverUrl}/department/update`,
                     xhrFields:{withCredentials:true},
                     data:`sn=${sn}&name=${name}&address=${address}`,
                     success:function(data,msg,xhr){
