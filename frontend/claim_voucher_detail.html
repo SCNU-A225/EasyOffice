@@ -178,7 +178,7 @@
         let id = getQueryVariable("id")
         $.ajax({
             method:'POST',
-            url:'http://127.0.0.1:5050/expense/detail',
+            url:`${serverUrl}/expense/detail`,
             data:`id=${id}`,
             xhrFields:{withCredentials:true},
             success:function(data,msg,xhr){

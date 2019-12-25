@@ -216,7 +216,7 @@
         $(window).ready(() => {
             $.ajax({
                 method:'GET',
-                url:'http://127.0.0.1:5050/expense/todo',
+                url:`${serverUrl}/expense/todo`,
                 xhrFields:{withCredentials:true},
                 success:function(data,msg,xhr){
                     let html = ``
@@ -270,7 +270,7 @@
             let money = name.split("+")[1]
             $.ajax({
                 method:'POST',
-                url:'http://127.0.0.1:5050/expense/submit',
+                url:`${serverUrl}/expense/submit`,
                 xhrFields:{withCredentials:true},
                 data:`id=${id}&amount=${money}`,
                 success:function(data,msg,xhr){

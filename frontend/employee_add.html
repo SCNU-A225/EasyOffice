@@ -266,7 +266,7 @@
             else{
                 $.ajax({
                     method:'POST',
-                    url:'http://127.0.0.1:5050/employee/add',
+                    url:`${serverUrl}/employee/add`,
                     xhrFields:{withCredentials:true},
                     data:`sn=${sn}&name=${name}&department_sn=${department_sn}&post=${post}`,
                     success:function(data,msg,xhr){

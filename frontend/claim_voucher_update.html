@@ -152,7 +152,7 @@
                     </div>
                     <div class="admin-form theme-primary mw1000 center-block" style="padding-bottom: 175px;">
                         <div class="panel heading-border">
-                            <form id="admin-form" name="addForm" action="#">
+                            <form id="admin-form" name="addForm">
                                 <div class="panel-body bg-light">
                                     <div class="section-divider mt20 mb40">
                                         <span> 基本信息 </span>
@@ -187,12 +187,11 @@
                                         </div>
                                     </div>
                                     <div class="panel-footer text-right">
-                                        <button type="submit" class="button" id="save"> 保存 </button>
-                                        <button type="button" class="button" onclick="javascript:window.history.go(-1);"> 返回
-                                        </button>
+                                        <button type="button" class="button" id="save"> 保存 </button>
+                                        <button type="button" class="button" onclick="javascript:window.history.go(-1);"> 返回</button>
                                     </div>
                                 </div>
-                            </form:form>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -210,37 +209,21 @@
     <script src="js/main.js"></script>
     <script type="text/javascript" src="js/pages.js"></script>
     <script src="js/base.js"></script>
-    <!-- <script src="js/nav-base.js"></script> -->
+    <script src="js/nav-base.js"></script>
 
     <script>
         $(document).ready(function (){
-            if(!sessionStorage.getItem('sn')){
-                alert("请先登录")
-                location.href = 'login.html'
-            }
-            if(sessionStorage.post != '总经理'){
-                $('#departmentManagement').addClass("hidden")
-                if(sessionStorage.post != '部门经理'){
-                    $('#employeeManagement').addClass("hidden")
-                    $('#infoManagmentLabel').addClass("hidden")
-                }
-            }
-            $('#rname').html(sessionStorage.getItem("name"))
-            $('#lname').html(sessionStorage.getItem("name"))
-            $('#post1').html(sessionStorage.getItem("post"))
             var id = getQueryVariable("id")
             $.ajax({
                 method:'POST',
-                url:'http://127.0.0.1:5050/expense/detail',
+                url:`${serverUrl}/expense/detail`,
                 xhrFields:{withCredentials:true},
                 data:`id=${id}`,
                 success:function(data,msg,xhr){
-                    let cause = data.info.cause
-                    let total_amount = data.info.total_amount
                     let itemslen = data.detail.length
                     let htm = ''
-                    $('#cause').val(cause)
-                    $("#totalMoney").val(total_amount)
+                    $('#cause').val(data.info.cause)
+                    $("#totalMoney").val(data.info.total_amount)
                     for(var i=0;i<itemslen;i++){
                         htm +=  '<div>\
                                     <div class="col-md-3">\
@@ -287,7 +270,7 @@
                     setClick();
                 },
                 error:function(xhr,err){
-                    console.log('异步请求失败'),
+                    console.log('异步请求失败')
                     console.log(xhr)
                     console.log(err)
                 }
@@ -335,13 +318,12 @@
                     }
                     $.ajax({
                         method:'POST',
-                        url:'http://127.0.0.1:5050/expense/update',
+                        url:`${serverUrl}/expense/update`,
                         data:`formData=${JSON.stringify(formData)}`,
                         xhrFields:{withCredentials:true},
                         success:function(data,msg,xhr){
                             if(data.code==200){
-                                //alert("保存成功")
-                                window.location.href = "claim_voucher_self.html"
+                                window.location.href = "claim_voucher_deal.html"
                             }
                             else{
                                 $('#modelMsgTitle').html("保存失败")

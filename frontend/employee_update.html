@@ -229,7 +229,7 @@
             var sn = getQueryVariable("sn")
             $.ajax({
                 method:'POST',
-                url:'http://127.0.0.1:5050/employee/info',
+                url:`${serverUrl}/employee/info`,
                 xhrFields:{withCredentials:true},
                 data:`sn=${sn}`,
                 success:function(data,msg,xhr){
@@ -264,7 +264,7 @@
             else{
                 $.ajax({
                     method:'POST',
-                    url:'http://127.0.0.1:5050/employee/update',
+                    url:`${serverUrl}/employee/update`,
                     xhrFields:{withCredentials:true},
                     data:`sn=${sn}&name=${name}&department_sn=${department_sn}&post=${post}`,
                     success:function(data,msg,xhr){

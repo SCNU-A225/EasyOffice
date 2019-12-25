@@ -1,3 +1,5 @@
+let serverUrl = "http://127.0.0.1:5050"
+
 //获取url中的id号
 function getQueryVariable(variable){
     var query = window.location.search.substring(1);
