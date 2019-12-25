@@ -16,7 +16,9 @@ create table claim_voucher
    total_amount         double,
    status               varchar(20),
    primary key (id)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+set names utf8;
 
 /*==============================================================*/
 /* Table: claim_voucher_item   报销单明细                       */
@@ -29,7 +31,7 @@ create table claim_voucher_item
    amount               double,
    comment              varchar(100),
    primary key (id)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*==============================================================*/
 /* Table: deal_record    处理记录                               */
@@ -44,7 +46,7 @@ create table deal_record
    deal_result          varchar(20),
    comment              varchar(100),
    primary key (id)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*==============================================================*/
 /* Table: department   部门                                     */
@@ -55,7 +57,7 @@ create table department
    name                 varchar(20),
    address              varchar(100),
    primary key (sn)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*==============================================================*/
 /* Table: employee    员工                                      */
@@ -68,7 +70,7 @@ create table employee
    department_sn        char(5),
    post                 varchar(20),
    primary key (sn)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 alter table claim_voucher add constraint FK_Reference_2 foreign key (next_deal_sn)
       references employee (sn);

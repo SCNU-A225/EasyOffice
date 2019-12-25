@@ -177,10 +177,6 @@
                                             <div class="col-md-6">
                                                 <label for="sn" class="field select">
                                                     <select name="setDe" id="setDepartment" class="gui-input">
-                                                        <option value="1" selected disabled style="display: none;">--所属部门--</option>
-                                                        <option value="10002">财务部</option>
-                                                        <option value="10003">事业部</option>
-                                                        <option value="10001">总经理办公室</option>
                                                     </select>
                                                     <i class="arrow double"></i>
                                                 </label>
@@ -225,6 +221,25 @@
     <script>
 
         $(document).ready(function(){
+            $.ajax({
+                method:'GET',
+                url:`${serverUrl}/department/all`,
+                xhrFields:{withCredentials:true},
+                data:``,
+                success:function(data,msg,xhr){
+                    let html = ''
+                    html += '<option value="1" selected disabled style="display: none;">--所属部门--</option>'
+                    for(i in data.departmentList){
+                        html += '<option value="'+ data.departmentList[i].sn +'">'+data.departmentList[i].name+'</option>'
+                    }
+                    $('#setDepartment').html(html)
+                },
+                error:function(xhr,err){
+                    console.log('异步请求失败'),
+                    console.log(xhr)
+                    console.log(err)
+                }
+            })
             //员工信息
             var sn = getQueryVariable("sn")
             $.ajax({
@@ -235,7 +250,8 @@
                 success:function(data,msg,xhr){
                     $('#formSn').val(data.employee.sn)
                     $('#formName').val(data.employee.name)
-                    
+                    $('#setDepartment').val(data.employee.department_sn)
+                    $('#setPost').val(data.employee.post)
                 },
                 error:function(xhr,err){
                     console.log('异步请求失败'),

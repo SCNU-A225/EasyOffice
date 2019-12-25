@@ -7,12 +7,14 @@ let mysql =  require('mysql')
 //创建数据库连接池
 //创建数据库连接 少一个connectionLimit
 let pool = mysql.createPool({
-    host : '127.0.0.1',
+    //host : '172.19.9.23',
+    host : 'localhost',
     port : '3306',
     user : 'root',
+    //password : 'root',
     password : '',
     database : 'easyoffice',
-    connectionLimit : '10'    //连接池大小限制
+    connectionLimit : '50'    //连接池大小限制
 })
 
 //导入第三方模块：express，创建基于NOde.js的web服务器
@@ -66,6 +68,7 @@ server.use(express.json())
 //自定义中间件，跨域访问
 server.use(function(request,response,next){
     // response.set('Access-Control-Allow-Origin','*')
+    //response.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");//前端域名
     response.header("Access-Control-Allow-Origin", "http://127.0.0.1:5500");//前端域名
     response.header("Access-Control-Allow-Credentials",'true');
     response.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
