@@ -15,7 +15,7 @@
   "author": "A225",
   "license": "Apache-2.0",
   "dependencies": {
-    "cookie-parser": "^1.4.4",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-session": "^1.17.0",
